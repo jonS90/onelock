@@ -1,0 +1,21 @@
+<!-- http://stackoverflow.com/questions/2812253/invisible-delimiter-for-strings-in-html/2814268#2814268 -->
+<span><p class="d c b" id="i0">0</p></span>
+<p class="c" id="i1">0</p>
+<table><tr><td><p class="c b f" id="i2">0</p></td></tr></table>
+<p onclick='console.log(this.toString().indexOf("\u200C") != -1);'>hey&zwnj;man</p>
+
+<input type="button" onclick="
+document.querySelector('#i0').innerHTML = Math.floor((Math.random()*100)+1); " value="+X">
+<input type="button" onclick="
+document.querySelector('#i1').innerHTML = Math.floor((Math.random()*100)+1); " value="+X">
+<input type="button" onclick="
+document.querySelector('table').innerHTML = '<table><tr><td class=&quot;c&quot;>' + Math.floor((Math.random()*100)+1) + '</td><td> stuff </td><td class=&quot;c yeah&quot;>yes</td></tr></table>'" value="+X">
+
+
+<br>
+<p id="after"></p>
+<input type="button" onclick='$("<p>new p</p>").addClass("c").insertAfter("#after")' value="insert new">
+
+<script src="../../lib/jquery.min.js"></script>
+<script src="../update_catcher.js"></script>
+<script src="./main.js"></script>
