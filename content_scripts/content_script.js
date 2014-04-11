@@ -14,6 +14,15 @@
 if ($('body').data("pgp")) {
   console.log("security features enabled");
 
+
+  function generateID() {
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    }); //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+  }
+
+
   //highlightComponents = function() {
   //  //$(".encrypted").fadeOut().css("color","blue").fadeIn();
   //  $('.encrypted, .decrypted').fadeOut().queue(function(){
@@ -41,6 +50,7 @@ if ($('body').data("pgp")) {
     return (text.slice(-2) == " `")
   }
   
+
   
 
   encryptText = function(plaintext) {
@@ -55,11 +65,14 @@ if ($('body').data("pgp")) {
     $encrypted = $('.encrypted');
 
 
+    //start decrypting elements
     observer.observeChanges("encrypted", decryptText, textIsDecrypted);
     $encrypted.fadeOut().queue(function() {
       $(this).text(decryptText($(this).text()));
       $(this).dequeue();
     }).fadeIn(1000);
+
+    //setup unencrypted form elements
 
   });
 
@@ -75,6 +88,7 @@ if ($('body').data("pgp")) {
   var port = chrome.runtime.connect();
 
   window.addEventListener("message", function(event) {
+    console.log(event)
     // We only accept messages from ourselves
     if (event.source != window) {
       console.log("wrong window")
