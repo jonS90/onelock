@@ -1,3 +1,8 @@
+displayEnum = {
+  inPlace: 0,
+  
+}
+
 // Saves options to chrome.storage
 function save_options() {
   var color = document.getElementById('color').value;
@@ -20,6 +25,7 @@ function save_options() {
 function restore_options() {
   // Use default value color = 'red' and likesColor = true.
   chrome.storage.sync.get({
+    
     favoriteColor: 'red',
     likesColor: true
   }, function(items) {

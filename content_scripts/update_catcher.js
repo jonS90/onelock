@@ -17,6 +17,8 @@
           return false;
       }; //http://stackoverflow.com/questions/237104/array-containsobj-in-javascript
 
+      if (modifyNode == undefined || nodeIsModified == undefined) throw "You gotta give me defined params"
+
 
 
       var docObserver = new WebKitMutationObserver(function(mutations) {
@@ -48,7 +50,7 @@
                             addedNode.innerHTML = modifyText(addedNode.innerHTML);
                         }
                         //handle the node's parent????
-                        else if (addedNode.parentNode && addedNode.parentNode.classList.contains(desiredClass)) {
+                        else if (addedNode.parentNode && addedNode.parentNode.classList && addedNode.parentNode.classList.contains(desiredClass)) {
                           if (!nodeIsModified($(addedNode.parentNode)))
                             console.log("NOT POSSIBLE???: parent has desired class!")
                         }

@@ -10,9 +10,15 @@
     {
       "matches": ["<all_urls>"],
       "css": ["content_scripts/content_css.css"],
-      "js": ["lib/jquery.min.js", "lib/jquery.highlight.js", "lib/aes.js", "content_scripts/update_catcher.js", "content_scripts/content_script.js"]
+      "js": ["lib/jquery.min.js", "lib/jquery.highlight.js", "lib/aes.js", "content_scripts/update_catcher.js", "content_scripts/nodeModifiers.js", "content_scripts/content_script.js"]
     }
   ],
+
+  "background": {
+    "scripts": ["eventPage.js"],
+    // "page": "showPlaintext.html",
+    "persistent": false
+  },
   
   "browser_action": {
     "default_icon": "res/lock.png",

@@ -1,6 +1,6 @@
 <!-- http://stackoverflow.com/questions/2812253/invisible-delimiter-for-strings-in-html/2814268#2814268 -->
 <body data-pgp="1">
-<span><p class="d c b" id="i0">0</p></span>
+<span><p class="d c b encrypted" id="i0">0</p></span>
 <p class="c" id="i1">0</p>
 <table><tr><td><p class="c b f" id="i2">0</p></td></tr></table>
 <p onclick='console.log(this.toString().indexOf("\u200C") != -1);'>hey&zwnj;man</p>
@@ -16,6 +16,7 @@ document.querySelector('table').innerHTML = '<table><tr><td class=&quot;c&quot;>
 <br>
 <p id="after"></p>
 <input type="button" onclick='$("<p>new p</p>").addClass("c").insertAfter("#after")' value="insert new">
+<input type="text" class="decrypted" value="hello"></input>
 </body>
 
 <!-- <script src="../../lib/jquery.min.js"></script> -->

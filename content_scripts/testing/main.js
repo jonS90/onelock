@@ -1,3 +1,10 @@
 console.log("hi")
 console.log(observer)
-observer.observeChanges("c", observer.modifyNode, observer.nodeIsModified);	
+
+decryptText = function(node) {
+	node.off('click.decrypt')
+	node.on('click.decrypt', function() {alert('you clicked an encrypted element')})
+	node.text(node.text() + " `")
+}
+
+observer.observeChanges("c", nodeModifiers.clickNodeToDecryptText, observer.nodeIsModified);	
