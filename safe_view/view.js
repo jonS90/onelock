@@ -1,16 +1,3 @@
-decryptText = function(ciphertext) {
-	    var password = "sdflkjweljsflkjsdflkjsdflkjsdfkljsdflkjsdflkj";
-	    var plaintext  = CryptoJS.AES.decrypt(ciphertext, password).toString(CryptoJS.enc.Utf8);
-	    if (plaintext == "") plaintext = "decryption failed"
-	    return plaintext
-	}
-
-encryptText = function(plaintext) {
-    var password = "sdflkjweljsflkjsdflkjsdflkjsdfkljsdflkjsdflkj";
-    var ciphertext  = CryptoJS.AES.encrypt(plaintext, password).toString();
-    return ciphertext
-}
-
 var popup = {
 	mode: {},
 	sendResponse: {},
@@ -29,7 +16,7 @@ closeWindow = function() {
 		var infoForPage = {
 			type: "return ciphertext",
 			nodeId: popup.node.id,
-			ciphertext: encryptText($('textarea').val())
+			ciphertext: cipher.encrypt($('textarea').val())
 		}
 
 		chrome.tabs.sendMessage(popup.tabId, infoForPage);
@@ -47,17 +34,22 @@ var setupPopup = function(infoForPopup) {
 	popup.sendResponse = infoForPopup.sendResponse
 	popup.tabId = infoForPopup.tabId;
 	popup.node = infoForPopup.node;
-	// alert("popup getting: " + infoForPopup);
-	popup.plaintext = decryptText(infoForPopup.ciphertext);
+	// popup.plaintext = decryptText(infoForPopup.ciphertext);
+	popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
+
 
 	$('.toggleable').hide();
 	switch(popup.mode) {
 		case "show":
-			$('#show').html("<u>decryption</u><br><p>" + popup.plaintext + "</p>").show();
+			$('#heading').text('decryption')
+			$('#show').html("<p>" + popup.plaintext.replace(/\n/g, "<br>") + "</p>").show();
 			break;
 		case "edit":
-			$('#edit').html("<u>edit decrypted text</u><p>").show();
-			$('#edit').append("<textarea autofocus='true'>"+popup.plaintext+"</textarea>")
+			$('#heading').text('edit decrypted text')
+			$('#edit').show();
+			$('#edit').append("<textarea class='form-control' rows='4'>"+"</textarea>")
+			//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
+			$('textarea').focus().val(popup.plaintext)
 			$('textarea').on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
 			break;
 		default:
@@ -79,4 +71,19 @@ Mousetrap.bind('alt+t', function(e) {
 	console.log(testval)
 })
 
-// $(window).blur(closeWindow); //http://stackoverflow.com/questions/1060008/is-there-a-way-to-detect-if-a-browser-window-is-not-currently-active
+
+//close window automatically after lost focus
+var lastTimer = null;
+$(window).blur(
+	function() {
+		closingWindow = true;
+		lastTimer = window.setTimeout(function() {
+			closeWindow()
+		}, 5000)
+	}
+);
+$(window).focus(function() {
+	console.log("clearing timer");
+	window.clearTimeout(lastTimer);
+})
+$('#dismiss').on('click', closeWindow)

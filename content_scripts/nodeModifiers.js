@@ -33,27 +33,17 @@ var nodeModifiers = {};
 				  	};
 				  	return allCss;
 				  };
-				  // myTabId = null;
-				  // haveMyTab = function(callback) {
-				  // 	if (!myTabId)
-				  // 		chrome.tabs.query(
-				  // 			{active: true, currentWindow: true}, 
-				  // 			function(tabs) {
-				  // 				myTabId = tabs[0].id
-				  // 				callback();
-				  // 			});
-				  // 	else callback();
-				  // }
 
-	              markNode     = function(node) {           node.text(node.text() + " `") }
+
+	              markNode     = function(node) {           node.html(node.html()  + " `") }
 	nodeModifiers.isNodeMarked = function(node) {	return (node.text().slice(-2) == " `") }
 
-	decryptText = function(ciphertext) {
-	    var password = "sdflkjweljsflkjsdflkjsdflkjsdfkljsdflkjsdflkj";
-	    var plaintext  = CryptoJS.AES.decrypt(ciphertext, password).toString(CryptoJS.enc.Utf8);
-	    if (plaintext == "") plaintext = "decryption failed"
-	    return plaintext
-	}
+	// decryptText = function(ciphertext) {
+	//     var password = "sdflkjweljsflkjsdflkjsdflkjsdfkljsdflkjsdflkj";
+	//     var plaintext  = CryptoJS.AES.decrypt(ciphertext, password).toString(CryptoJS.enc.Utf8);
+	//     if (plaintext == "") plaintext = "decryption failed"
+	//     return plaintext
+	// }
 
 	
 
@@ -77,8 +67,8 @@ var nodeModifiers = {};
 	}
 
 	nodeModifiers.clickNodeToDecryptText = function(node) {
-		node.off('click.decryptToPopup')
-		var text = node.text()
+		node.off('click.decryptToPopup');
+		var text = node.text();
 		node.on('click.decryptToPopup', function() {
 			console.log("webpage sending text: " + text)
 			chrome.runtime.sendMessage(
@@ -91,7 +81,7 @@ var nodeModifiers = {};
 	}
 
 	nodeModifiers.decryptTextInPlace = function(node) {
-		node.text(decryptText(node.text()));
+		node.html(cipher.decrypt(node.text()).replace(/\n/g, "<br>"));
 		markNode(node);
 	}
 }

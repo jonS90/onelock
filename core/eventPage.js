@@ -13,19 +13,21 @@ var infoForPopup = {
 
 var showPlaintext = function(message, sender, sendResponse) {
 	var launchWindow = function() {
-		var w = 291;
-		var h = 180;
-		var left = (window.screen.width)-((w)+5);
-		var top = 20; //(window.screen.height/2)-(h/2);
+		var w = 405 //291;
+		var h = 250 //180;
+		var left = (window.screen.width)-((w)+10);
+		var top = 25+10; //(window.screen.height/2)-(h/2);
 		var url = chrome.extension.getURL('safe_view/view.html')
-		chrome.windows.create({url: url, width: w, height: h, left: left, top: top, focused:true, type:"popup"});
+		var options = {url: url, width: w, height: h, left: left, top: top, focused:true, type:"popup"};
+		console.log(options);
+		chrome.windows.create(options);
 	}
 
 
 
 	switch(message.type) {
 	case "retrieve ciphertext":
-		console.log(infoForPopup);
+		// console.log(infoForPopup);
 		sendResponse(infoForPopup);
 		break;
 	case "decrypt and show":
@@ -50,4 +52,13 @@ var showPlaintext = function(message, sender, sendResponse) {
 }
 
 
+var initialize = function() {
+	chrome.storage.local.set({
+		'displayMethod':'popup',
+		'editMethod':'popup',
+		'facebook':false
+	});
+}
+
 chrome.runtime.onMessage.addListener(showPlaintext)
+chrome.runtime.onInstalled.addListener(initialize)

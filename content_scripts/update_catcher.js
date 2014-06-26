@@ -33,7 +33,7 @@
                       desiredClass
                     )) {
                         if (!nodeIsModified($(mutation.target.parentNode))) {
-                            console.log("update: " + mutation.target.data);
+                            console.log("update node's text: " + mutation.target.data);
 
                             modifyNode($(mutation.target.parentNode));
                         }
@@ -45,22 +45,22 @@
                     nodes.forEach(function(addedNode) {
                         //handle the node itself
                         if (addedNode.classList && addedNode.classList.contains(desiredClass)) {
-                            console.log("insert: " + addedNode.innerHTML); 
-                            console.log("NOT IMPLEMENTED")
-                            addedNode.innerHTML = modifyText(addedNode.innerHTML);
+                            console.log("insert node: " + addedNode.innerHTML); 
+                            modifyNode($(addedNode));
                         }
                         //handle the node's parent????
                         else if (addedNode.parentNode && addedNode.parentNode.classList && addedNode.parentNode.classList.contains(desiredClass)) {
-                          if (!nodeIsModified($(addedNode.parentNode)))
-                            console.log("NOT POSSIBLE???: parent has desired class!")
+                          if (!nodeIsModified($(addedNode.parentNode))) {
+                            console.log("insert child of node?: " + addedNode.parentNode) //" parent has desired class!")
+                            modifyNode($(addedNode.parentNode))
+                          }
                         }
 
                         //handle the node's descendents
                         else $(addedNode).find('.' + desiredClass).each(function() {//.css( "background-color", "red" );
-                            console.log("insert child: " + $(this).html())
+                            console.log("insert parent of node: " + $(this).html())
                             $(this).html(modifyNode($(this)))
                         });
-
                     });
                 }
             });

@@ -10,12 +10,12 @@
     {
       "matches": ["<all_urls>"],
       "css": ["content_scripts/content_css.css"],
-      "js": ["lib/jquery.min.js", "lib/jquery.highlight.js", "lib/aes.js", "content_scripts/update_catcher.js", "content_scripts/nodeModifiers.js", "content_scripts/content_script.js"]
+      "js": ["lib/jquery.min.js", "lib/jquery.highlight.js", "lib/jsencrypt.min.js", "lib/aes.js", "shared/cipher.js", "content_scripts/update_catcher.js", "content_scripts/nodeModifiers.js", "shared/enums.js", "content_scripts/content_script.js"]
     }
   ],
 
   "background": {
-    "scripts": ["eventPage.js"],
+    "scripts": ["core/eventPage.js"],
     // "page": "showPlaintext.html",
     "persistent": false
   },

@@ -1,9 +1,24 @@
 <body>
-<div class="toggleable" id="show"></div>
-<div class="toggleable" id="edit"></div>
+  <div class="panel panel-default" style="height:100%; margin-bottom: 0px">
+    <div class="panel-heading"><h4 id="heading">sdf</h4></div>
+    <div class="panel-body">
+		<div class="toggleable" id="show"></div>
+		<div class="toggleable" id="edit"></div>
+  		<input type="button" id="dismiss" class="btn btn-primary" value="Dismiss" style="margin-top: 10px">
+    </div>
+  </div>
 <div class="toggleable" id="error"></div>
+<script src="../lib/aes.js"></script>
+<script src="../lib/jsencrypt.min.js"></script>
+<script src="../shared/cipher.js"></script>
 <script src="../lib/jquery.min.js"></script>
 <script src="../lib/mousetrap.min.js"></script>
-<script src="../lib/aes.js"></script>
+<script src="../lib/bootstrap.min.js"></script>
+<link  href="../lib/bootstrap.min.css" rel="stylesheet" type="text/css">
 <script src="view.js"></script>
+<style>
+  body {
+    padding:0px;
+  }
+</style>
 </body>
