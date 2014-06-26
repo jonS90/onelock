@@ -1,7 +1,0 @@
-<head><title>title</title></head><body>body
-
-
-<script src="../lib/aes.js"></script>
-<script src="../lib/jsencrypt.min.js"></script>
-<script src="../shared/cipher.js"></script>
-</body>
