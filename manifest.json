@@ -4,7 +4,7 @@
 {
   "manifest_version": 2,
 
-  "name": "PGP-surf",
+  "name": "PGP for Chrome",
   "description": "Brings the security of PGP to any interaction",
   "version": "0.0",
   "icons":{"128":"res/lock.png"},
@@ -28,7 +28,7 @@
     "default_popup": "popup.html"
   },
 
-  "options_page": "options/options.html",
+  "options_page": "options/setup.html",
   
   "permissions": [
     "storage"
