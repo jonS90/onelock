@@ -1,4 +1,4 @@
-pgp-for-chrome
+PGP for Chrome
 ==============
 
 A chrome extension which permits a new model of security for web applications.
