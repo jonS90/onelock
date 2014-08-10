@@ -31,6 +31,7 @@
   "options_page": "options/setup.html",
   
   "permissions": [
-    "storage"
+    "storage",
+    "clipboardWrite"
   ]
 }

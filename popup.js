@@ -2,6 +2,7 @@ $(function() {
 	// VARIABLES
 	KEYRING_ADD = $("#keys_add");
 	KEYRING_MANAGE = $("#keys_manage");
+	KEYRING_COPY = $("#keys_copy");
 	USEWITH_FACEBOOK = $("#facebook");
 
 	// GROUPED-BUTTON CLICKS
@@ -18,6 +19,10 @@ $(function() {
 		} 
 	})
 
+	KEYRING_COPY.on('click', function() {
+		copyToClipboard("WASSUP") //TODO insert actual key here
+		window.close()
+	})
 	KEYRING_ADD.on('click', function() {
 		//open view as popup
 		var w = 405
@@ -49,3 +54,16 @@ $(function() {
 		$("#facebook").prop('checked', settings.facebook)
 	})
 });
+
+
+function copyToClipboard(text){
+    var copyDiv = document.createElement('div');
+    copyDiv.contentEditable = true;
+    document.body.appendChild(copyDiv);
+    copyDiv.innerHTML = text;
+    copyDiv.unselectable = "off";
+    copyDiv.focus();
+    document.execCommand('SelectAll');
+    document.execCommand("Copy", false, null);
+    document.body.removeChild(copyDiv);
+} //https://coderwall.com/p/5rv4kq
