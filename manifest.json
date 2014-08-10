@@ -1,5 +1,6 @@
 // todo : FEATURE - accept private/public keys for SELF and FRIENDS via copy and paste (show instructions for using openssl)
 // todo : FEATURE - choose recipients when inputting text
+// todo : FEATURE - add keys persistently in keyring in shared/cipher
 {
   "manifest_version": 2,
 

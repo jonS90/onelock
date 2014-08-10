@@ -56,7 +56,9 @@ var initialize = function() {
 	chrome.storage.local.set({
 		'displayMethod':'popup',
 		'editMethod':'popup',
-		'facebook':false
+		'facebook':false,
+		'privateKey':null,
+		'publicKey':null
 	});
 }
 
