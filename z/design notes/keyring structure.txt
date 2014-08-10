@@ -1,0 +1,4 @@
+keyring is an array where each element has the following attributes:
+  id 
+  displayName
+  publicKey
