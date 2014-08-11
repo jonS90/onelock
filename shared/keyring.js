@@ -32,6 +32,8 @@ keyring.add = function(displayName, publicKey) {
 
 	// I MAY or MAY NOT need to update Fuse for fuzzy search
 	//keyring.initialize(keyring.getKeyringData());
+
+	// Also, make sure you do some kind of format check on the publicKey
 }
 
 /**
