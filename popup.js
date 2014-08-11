@@ -26,7 +26,7 @@ $(function() {
 	KEYRING_ADD.on('click', function() {
 		//open view as popup
 		var w = 405
-		var h = 555 //655
+		var h = 320 //655
 		var left = Math.round((window.screen.width - w) / 2);
 		var top = Math.round((window.screen.height - h) / 2);
 		var windowUrl = chrome.extension.getURL('views/add_contact/add_contact.html')
