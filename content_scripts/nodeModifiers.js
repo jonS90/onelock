@@ -59,7 +59,8 @@ var nodeModifiers = {};
 			console.log("webpage wants to edit text");
 			chrome.runtime.sendMessage(
 				{
-					type: "decrypt and edit", 
+					type: enums.messageType.DECRYPT_AND_SHOW, 
+					editable: true,
 					ciphertext: text, 
 					node: makePortable(node)
 				});
@@ -72,7 +73,7 @@ var nodeModifiers = {};
 		node.on('click.decryptToPopup', function() {
 			console.log("webpage sending text: " + text)
 			chrome.runtime.sendMessage(
-				{type: "decrypt and show", ciphertext: text, node: makePortable(node)}
+				{type: enums.messageType.DECRYPT_AND_SHOW, ciphertext: text, node: makePortable(node)}
 				)
 			// chrome.notifications.create({TemplateType: "basic", title: "Decryption", message: text})
 		})

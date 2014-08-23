@@ -8,6 +8,16 @@ var enums = {
 		popup: 3,
 		iframe: 4,
 		inplace: 5
+	},
+	messageType: {
+		
+		//when a contentscript requests to decrypt something, possibly as editable
+		DECRYPT_AND_SHOW: 0,
+		//when a safe_view popup/iframe is getting ciphertext from the eventPage
+		GET_CIPHERTEXT: 1,
+		//when someplace is adding
+		ADD_CONTACT: 2,
+
 	}
 }
 

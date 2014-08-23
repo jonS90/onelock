@@ -2,13 +2,33 @@
 
 
 
-
+// A state variable. The content script sends info to this eventPage, which must forward it to a new popup page.
 var infoForPopup = {
 	ciphertext: "not set", 
 	mode: "not set",
 	node: null,
 	sendResponse: null
 };
+
+
+var dispatcher = function(message, sender, sendResponse) {
+	switch(message.type) {
+	case (enums.messageType.DECRYPT_AND_SHOW):
+		//from contentScript to eventPage
+		showPlaintext(message, sender, sendResponse)
+		break;
+	case (enums.messageType.GET_CIPHERTEXT):
+		//from safe_view popup to eventPage
+		sendResponse(infoForPopup);
+		break;
+	case (enums.messageType.ADD_CONTACT):
+		//from add_contact form to eventPage
+		throw "to implement" //TODO implement
+		break;
+	default:
+		alert("developer's mistake: event page doesn't know what to do with this type: " + message.type);
+	}
+}
 
 
 var showPlaintext = function(message, sender, sendResponse) {
@@ -23,34 +43,18 @@ var showPlaintext = function(message, sender, sendResponse) {
 		chrome.windows.create(options);
 	}
 
-
-
-	switch(message.type) {
-	case "retrieve ciphertext":
-		// console.log(infoForPopup);
-		sendResponse(infoForPopup);
-		break;
-	case "decrypt and show":
-		infoForPopup.mode = "show";
-		infoForPopup.ciphertext = message.ciphertext;
-		infoForPopup.node = message.node
-		launchWindow();
-		break;
-	case "decrypt and edit":
-		infoForPopup.mode = "edit";
-		infoForPopup.ciphertext = message.ciphertext;
-		infoForPopup.node = message.node
-		infoForPopup.sendResponse = sendResponse
-		infoForPopup.tabId = sender.tab.id;
-		launchWindow();
-		// return 1; // http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-between-extensionbackground-and-content-scrip
-		//              this did not work.....whatevs
-		break;
-	default:
-		alert("event page doesn't know what to do with this type: " + message.type);
-	}
+	infoForPopup.mode = (message.editable) ? "edit" : "show";
+	infoForPopup.ciphertext = message.ciphertext;
+	infoForPopup.node = message.node
+	infoForPopup.sendResponse = sendResponse
+	console.debug(sender);
+	infoForPopup.tabId = sender.tab.id;
+	launchWindow();
 }
 
+var addContact = function(contact) {
+
+}
 
 var initialize = function() {
 	chrome.storage.local.set({
@@ -62,5 +66,5 @@ var initialize = function() {
 	});
 }
 
-chrome.runtime.onMessage.addListener(showPlaintext)
+chrome.runtime.onMessage.addListener(dispatcher)
 chrome.runtime.onInstalled.addListener(initialize)

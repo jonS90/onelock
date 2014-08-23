@@ -56,7 +56,7 @@ var setupPopup = function(infoForPopup) {
 			$('#error').html("something ``went wrong....invalid mode specified").show();
 	}
 }
-chrome.runtime.sendMessage({type: "retrieve ciphertext"}, setupPopup);
+chrome.runtime.sendMessage({type: enums.messageType.GET_CIPHERTEXT}, setupPopup);
 
 
 Mousetrap.bind('ctrl+enter', function(e) {

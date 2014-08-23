@@ -1,0 +1,7 @@
+@startuml
+ContentScript --> EventsPage: Decrypt and show
+EventsPage --> Popup: (Create popup)
+Popup -> EventsPage: Retrieve ciphertext
+EventsPage --> Popup: (Return ciphertext)
+Popup -> Popup: Decrypt and show
+@enduml
