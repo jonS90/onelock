@@ -15,20 +15,23 @@ onFacebook = function() {return ($(location).attr('href').indexOf("://www.facebo
 // don't do anything unless we see the flag: <body data-pgp="1">
 if ($('body').data("pgp") || onFacebook()) {
 
-  console.log("fetching pgp settings");
+  console.time("fetch pgp settings");
 
   chrome.storage.local.get(["displayMethod","editMethod", "facebook"], function(settings) {
-    console.log("fetched");
+    console.timeEnd("fetch pgp settings");
     displayMethod = enums.getDisplayMethod(settings.displayMethod);
     editMethod = enums.getEditMethod(settings.editMethod);
     
     displayClass = "encryptedtext"
     editClass = "encryptedinput" 
+
+    // FACEBOOK CONFIGURATION
     if ($(location).attr('href').indexOf("://www.facebook.com") > -1) {
       if (!settings.facebook) {
-        console.log("don't mess with Facebook")
+        console.log("PGP disabled on Facebook")
         return
       }
+      console.log("PGP active on Facebook")
       displayClass = "null"
       editClass = "uiTextareaAutogrow"
     }
