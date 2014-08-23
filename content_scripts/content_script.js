@@ -13,10 +13,9 @@
 onFacebook = function() {return ($(location).attr('href').indexOf("://www.facebook.com") > -1);}
 
 // don't do anything unless we see the flag: <body data-pgp="1">
-if ($('body').data("pgp") || onFacebook) {
+if ($('body').data("pgp") || onFacebook()) {
 
   console.log("fetching pgp settings");
-
 
   chrome.storage.local.get(["displayMethod","editMethod", "facebook"], function(settings) {
     console.log("fetched");
@@ -36,13 +35,13 @@ if ($('body').data("pgp") || onFacebook) {
 
     $(document).ready(function() {
       
-      //display elements
+      //encrypted display elements
       observer.observeChanges(displayClass, displayMethod, nodeModifiers.isNodeMarked);
       $('.'+displayClass).each(function() {
         displayMethod($(this));
       })
 
-      //input elements
+      //encrypted input elements
       observer.observeChanges(editClass, editMethod, nodeModifiers.isNodeMarked);
       $('.'+editClass).each(function() {
         nodeModifiers.clickNodeToEditValue($(this));
