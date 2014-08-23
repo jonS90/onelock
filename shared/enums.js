@@ -13,7 +13,7 @@ var enums = {
 		
 		//when a contentscript requests to decrypt something, possibly as editable
 		DECRYPT_AND_SHOW: 0,
-		//when a safe_view popup/iframe is getting ciphertext from the eventPage
+		//when a view_sensitive_text popup/iframe is getting ciphertext from the eventPage
 		GET_CIPHERTEXT: 1,
 		//when someplace is adding
 		ADD_CONTACT: 2,
@@ -76,7 +76,7 @@ if (typeof nodeModifiers != 'undefined') {
 			case "popup": //(enums.display.popup):
 				return nodeModifiers.clickNodeToDecryptText;
 				break;
-			default: throw "method not found"
+			default: throw "method " + myenum + " not found"
 		}
 	}
 }

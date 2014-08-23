@@ -2,6 +2,7 @@
  * Saves fields to chrome.storage.
  */
 function save_fields() {
+  //todo the private key, at least, should be encrypted
   PUBLIC_KEY.val();
   chrome.storage.sync.set({
     privateKey: PRIVATE_KEY.val(),

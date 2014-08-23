@@ -17,7 +17,7 @@ if ($('body').data("pgp") || onFacebook()) {
 
   console.time("fetch pgp settings");
 
-  chrome.storage.local.get(["displayMethod","editMethod", "facebook"], function(settings) {
+  chrome.storage.sync.get(["displayMethod","editMethod", "facebook"], function(settings) {
     console.timeEnd("fetch pgp settings");
     displayMethod = enums.getDisplayMethod(settings.displayMethod);
     editMethod = enums.getEditMethod(settings.editMethod);
@@ -29,6 +29,8 @@ if ($('body').data("pgp") || onFacebook()) {
     if ($(location).attr('href').indexOf("://www.facebook.com") > -1) {
       if (!settings.facebook) {
         console.log("PGP disabled on Facebook")
+        console.log(settings)
+        console.log(settings.facebook)
         return
       }
       console.log("PGP active on Facebook")

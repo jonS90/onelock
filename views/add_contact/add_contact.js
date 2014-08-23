@@ -60,8 +60,13 @@ $(function() {
 			console.log("sdf");
 			STATUS.text("Please check for invalid fields")
 		} else {
-			// keyring.add(CONTACT_NAME.val(), CONTACT_KEY.val()
-			// TODO I Just realized I have to use message passing to add keys...
+			var newcontact = {
+				type: enums.messageType.ADD_CONTACT,
+				displayName: CONTACT_NAME.val(),
+				publicKey: CONTACT_KEY.val()
+			}
+			chrome.runtime.sendMessage(newcontact);
+			console.debug("sent message to add contact");
 		}
 	})
 })

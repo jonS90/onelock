@@ -1,14 +1,30 @@
-// alert("event page load")
 
-
-
-// A state variable. The content script sends info to this eventPage, which must forward it to a new popup page.
+// Initialize a state variable. 
+// The content script sends info to this eventPage, which must forward it to a new popup page.
+// This variable is that info.
 var infoForPopup = {
 	ciphertext: "not set", 
 	mode: "not set",
 	node: null,
 	sendResponse: null
 };
+
+
+var loadKeyring = function(callback) {
+	//todo: consider making this a dictionary to help avoid duplicates
+	if (!callback) throw "You ought to give a callback"
+	chrome.storage.sync.get("keyring", function(data) {
+		var keyringData = data.keyring
+		if (keyringData.length == undefined) {
+			alert("new keyring made") //todo don't leave this here
+			keyringData = []
+		}
+		callback(keyringData)
+	})
+}
+var saveKeyring = function(keyringData) {
+	chrome.storage.sync.set("keyring", keyringData) 
+}
 
 
 var dispatcher = function(message, sender, sendResponse) {
@@ -18,12 +34,12 @@ var dispatcher = function(message, sender, sendResponse) {
 		showPlaintext(message, sender, sendResponse)
 		break;
 	case (enums.messageType.GET_CIPHERTEXT):
-		//from safe_view popup to eventPage
-		sendResponse(infoForPopup);
+		//from view_sensitive_text popup to eventPage
+		sendResponse(infoForPopup)
 		break;
 	case (enums.messageType.ADD_CONTACT):
 		//from add_contact form to eventPage
-		throw "to implement" //TODO implement
+		addContact(message)
 		break;
 	default:
 		alert("developer's mistake: event page doesn't know what to do with this type: " + message.type);
@@ -37,7 +53,7 @@ var showPlaintext = function(message, sender, sendResponse) {
 		var h = 250 //180;
 		var left = (window.screen.width)-((w)+10);
 		var top = 25+10; //(window.screen.height/2)-(h/2);
-		var url = chrome.extension.getURL('safe_view/view.html')
+		var url = chrome.extension.getURL('views/view_sensitive_text/view_sensitive_text.html')
 		var options = {url: url, width: w, height: h, left: left, top: top, focused:true, type:"popup"};
 		console.log(options);
 		chrome.windows.create(options);
@@ -53,11 +69,32 @@ var showPlaintext = function(message, sender, sendResponse) {
 }
 
 var addContact = function(contact) {
+	//todo: reject duplicate names and maybe duplicate keys.
+
+	console.group("Adding contact to keyring");
+	console.time("appended contact")
+
+	loadKeyring(function(keyringData) {
+
+		console.log(keyringData);
+
+		//update in memory
+		keyringData[keyringData.length] = contact;
+
+		console.log(keyringData);
+
+		//save to storage
+		chrome.storage.sync.set({keyring: keyringData}, function() {
+			console.timeEnd("appended contact")
+			console.groupEnd();
+		})
+	})
+
 
 }
 
 var initialize = function() {
-	chrome.storage.local.set({
+	chrome.storage.sync.set({
 		'displayMethod':'popup',
 		'editMethod':'popup',
 		'facebook':false,

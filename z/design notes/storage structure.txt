@@ -1,0 +1,12 @@
+{
+	displayMethod: enum,
+	editMethod: enum,
+	facebook: bool,
+	privateKey: string,
+	publicKey: string,
+	keyring: [
+		id,
+		displayName,
+		publicKey
+	]
+}

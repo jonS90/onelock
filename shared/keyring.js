@@ -28,7 +28,7 @@ keyring.initialize = function(stored_keyring) {
  * @param {[type]} publicKey
  */
 keyring.add = function(displayName, publicKey) {
-	throws "not implemented"
+	throw "not implemented"
 
 	// I MAY or MAY NOT need to update Fuse for fuzzy search
 	//keyring.initialize(keyring.getKeyringData());
