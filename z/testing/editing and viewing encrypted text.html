@@ -1,0 +1,28 @@
+<body data-pgp="1" align="right">
+	<table style="width:100%">
+		<tr style="width:100%;">
+			<td style="width:50%;vertical-align:top">
+				<h3> Output </h3>
+				<div id="messages" style="padding:10px;height:300px;word-wrap:break-word;word-break:break-all;overflow-y: scroll"></div>
+			</td>
+			<td>
+				<h3> Input </h3>
+				<textarea value="hello" rows="17" style="width:100%" class="encryptedinput" id="inputtext"></textarea>
+				<br>
+				<input type="button" value="send" style="width:100%;height:50px" onclick="sendMessage()"></input>
+			</td>
+		</tr>
+	</table>
+</body>
+<script>
+sendMessage = function() {
+	msg = document.querySelector("#inputtext").value;
+
+	var textNode = document.createTextNode(msg);
+	var p = document.createElement("p");
+	console.dir(p);
+	p.appendChild(textNode);
+
+	document.querySelector("#messages").appendChild(p);
+}
+</script>
