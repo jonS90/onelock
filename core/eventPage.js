@@ -29,6 +29,10 @@ var saveKeyring = function(keyringData) {
 
 var dispatcher = function(message, sender, sendResponse) {
 	switch(message.type) {
+	case (enums.messageType.SHOW_PAGEACTION):
+		//from contentScript to eventPage
+		showPageAction()
+		break;
 	case (enums.messageType.DECRYPT_AND_SHOW):
 		//from contentScript to eventPage
 		showPlaintext(message, sender, sendResponse)
@@ -46,6 +50,15 @@ var dispatcher = function(message, sender, sendResponse) {
 	}
 }
 
+var showPageAction = function() {
+	chrome.tabs.query(
+        {currentWindow: true, active: true},
+        function(tabArray) {
+            if (tabArray && tabArray[0])
+                chrome.pageAction.show(tabArray[0].id);
+        }
+    );
+}
 
 var showPlaintext = function(message, sender, sendResponse) {
 	var launchWindow = function() {

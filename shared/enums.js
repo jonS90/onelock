@@ -17,6 +17,8 @@ var enums = {
 		GET_CIPHERTEXT: 1,
 		//when someplace is adding
 		ADD_CONTACT: 2,
+		//when contentscript says to show page action
+		SHOW_PAGEACTION: 3,
 
 	}
 }

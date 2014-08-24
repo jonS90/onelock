@@ -15,6 +15,8 @@ onFacebook = function() {return ($(location).attr('href').indexOf("://www.facebo
 // don't do anything unless we see the flag: <body data-pgp="1">
 if ($('body').data("pgp") || onFacebook()) {
 
+  chrome.runtime.sendMessage({type: enums.messageType.SHOW_PAGEACTION});
+
   console.time("fetch pgp settings");
 
   chrome.storage.sync.get(["displayMethod","editMethod", "facebook"], function(settings) {

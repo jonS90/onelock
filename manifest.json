@@ -23,7 +23,7 @@
     "persistent": false
   },
   
-  "browser_action": {
+  "page_action": {
     "default_icon": "res/lock.png",
     "default_popup": "popup.html"
   },
