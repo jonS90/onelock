@@ -48,6 +48,10 @@ var setupPopup = function(infoForPopup) {
 			$('#heading').text('edit decrypted text')
 			$('#edit').show();
 			$('#edit').append("<textarea class='form-control' rows='4'>"+"</textarea>")
+
+			//make the bootstrap input-group popout like its supposed to
+			$('.panel-body').css("background-color", "222222");
+
 			//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
 			$('textarea').focus().val(popup.plaintext)
 
@@ -58,16 +62,12 @@ var setupPopup = function(infoForPopup) {
 			$('textarea').on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
 			break;
 		default:
-			$('#error').html("something ``went wrong....invalid mode specified").show();
+			$('#error').html("developer mistake...invalid mode specified").show();
 	}
 }
+
+//TODO: is there a possibility for a race condition?
 chrome.runtime.sendMessage({type: enums.messageType.GET_CIPHERTEXT}, setupPopup);
-
-
-//this doesn't work inside textarea
-// Mousetrap.bind('ctrl+enter', function(e) {
-// 	alert("control enter");
-// })
 
 Mousetrap.bind('esc', function(e) {
 	closeWindow()
@@ -89,7 +89,7 @@ $(window).blur(
 	}
 );
 $(window).focus(function() {
-	console.log("clearing timer");
+	console.debug("clearing timer");
 	window.clearTimeout(lastTimer);
 })
 $('#dismiss').on('click', closeWindow)
