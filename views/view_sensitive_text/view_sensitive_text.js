@@ -50,7 +50,12 @@ var setupPopup = function(infoForPopup) {
 			$('#edit').append("<textarea class='form-control' rows='4'>"+"</textarea>")
 			//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
 			$('textarea').focus().val(popup.plaintext)
+
+			//escape key
 			$('textarea').on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
+
+			//ctrl-enter
+			$('textarea').on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
 			break;
 		default:
 			$('#error').html("something ``went wrong....invalid mode specified").show();
@@ -59,9 +64,10 @@ var setupPopup = function(infoForPopup) {
 chrome.runtime.sendMessage({type: enums.messageType.GET_CIPHERTEXT}, setupPopup);
 
 
-Mousetrap.bind('ctrl+enter', function(e) {
-	alert("control enter");
-})
+//this doesn't work inside textarea
+// Mousetrap.bind('ctrl+enter', function(e) {
+// 	alert("control enter");
+// })
 
 Mousetrap.bind('esc', function(e) {
 	closeWindow()
