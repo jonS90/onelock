@@ -25,7 +25,8 @@
   
   "page_action": {
     "default_icon": "res/lock.png",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_title": "PGP for Chrome"
   },
 
   "options_page": "options/setup.html",
