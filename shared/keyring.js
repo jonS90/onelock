@@ -49,7 +49,7 @@ keyring.getKeyringData = function() {
  * @return {[type]}
  */
 keyring.fuzzySearch = function(search_string) {
-	return fuse.search(search_string);
+	return keyring.fuse.search(search_string);
 }
 
 /****************************************

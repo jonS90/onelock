@@ -26,17 +26,17 @@ closeWindow = function() {
 }
 
 
-var testval; 
+var testval; //debugging
 var setupPopup = function(infoForPopup) {
 	
-	testval = infoForPopup
+	testval = infoForPopup //debugging
 	popup.mode = infoForPopup.mode;
 	popup.sendResponse = infoForPopup.sendResponse
 	popup.tabId = infoForPopup.tabId;
 	popup.node = infoForPopup.node;
-	// popup.plaintext = decryptText(infoForPopup.ciphertext);
 	popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
 
+	keyring.initialize(infoForPopup.keyringData)
 
 	$('.toggleable').hide();
 	switch(popup.mode) {
@@ -52,14 +52,24 @@ var setupPopup = function(infoForPopup) {
 			//make the bootstrap input-group popout like its supposed to
 			$('.panel-body').css("background-color", "222222");
 
+			textarea = $('textarea')
+
 			//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
-			$('textarea').focus().val(popup.plaintext)
+			textarea.focus().val(popup.plaintext)
 
 			//escape key
-			$('textarea').on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
+			textarea.on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
 
 			//ctrl-enter
-			$('textarea').on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
+			textarea.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
+
+			//fuzzy-search
+			searchField = $('#contactsearch')
+			searchField.on("keypress", function(e) {
+				//todo: actually show this on the GUI
+				console.log(searchField.val())
+				console.log(keyring.fuzzySearch(searchField.val()))
+			})
 			break;
 		default:
 			$('#error').html("developer mistake...invalid mode specified").show();
@@ -73,7 +83,8 @@ Mousetrap.bind('esc', function(e) {
 	closeWindow()
 })
 
-Mousetrap.bind('alt+t', function(e) {
+// debugging
+Mousetrap.bind('alt+t', function(e) { 
 	console.log(testval)
 })
 

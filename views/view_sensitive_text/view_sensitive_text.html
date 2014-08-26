@@ -8,7 +8,7 @@
       <div class="toggleable" id="edit">
         <div class="input-group">
           <span class="input-group-addon">Readable by:</span>
-          <input type="text" class="form-control" placeholder="Name">
+          <input type="text" class="form-control" id="contactsearch" placeholder="Name">
         </div>
         <br>
         <!-- text element to be inserted by js -->
@@ -18,8 +18,10 @@
   </div>
 <div class="toggleable" id="error"></div>
 <script src="../../lib/aes.js"></script>
+<script src="../../lib/fuse.min.js"></script>
 <script src="../../lib/jsencrypt.min.js"></script>
 <script src="../../shared/cipher.js"></script>
+<script src="../../shared/keyring.js"></script>
 <script src="../../shared/enums.js"></script>
 <script src="../../lib/jquery.min.js"></script>
 <script src="../../lib/mousetrap.min.js"></script>

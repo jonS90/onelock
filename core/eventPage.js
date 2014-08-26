@@ -6,20 +6,20 @@ var infoForPopup = {
 	ciphertext: "not set", 
 	mode: "not set",
 	node: null,
-	sendResponse: null
+	sendResponse: null,
+	keyringData: null
 };
 
 
 var loadKeyring = function(callback) {
-	//todo: consider making this a dictionary to help avoid duplicates
-	if (!callback) throw "You ought to give a callback"
 	chrome.storage.sync.get("keyring", function(data) {
 		var keyringData = data.keyring
 		if (keyringData.length == undefined) {
 			alert("new keyring made") //todo don't leave this here
 			keyringData = []
 		}
-		callback(keyringData)
+		if (callback)
+			callback(keyringData)
 	})
 }
 var saveKeyring = function(keyringData) {
@@ -62,13 +62,12 @@ var showPageAction = function() {
 
 var showPlaintext = function(message, sender, sendResponse) {
 	var launchWindow = function() {
-		var w = 405 //291;
-		var h = 250 //180;
+		var w = 405 
+		var h = (message.editable) ? 300 : 250
 		var left = (window.screen.width)-((w)+10);
 		var top = 25+10; //(window.screen.height/2)-(h/2);
 		var url = chrome.extension.getURL('views/view_sensitive_text/view_sensitive_text.html')
 		var options = {url: url, width: w, height: h, left: left, top: top, focused:true, type:"popup"};
-		console.log(options);
 		chrome.windows.create(options);
 	}
 
@@ -76,8 +75,9 @@ var showPlaintext = function(message, sender, sendResponse) {
 	infoForPopup.ciphertext = message.ciphertext;
 	infoForPopup.node = message.node
 	infoForPopup.sendResponse = sendResponse
-	console.debug(sender);
+	infoForPopup.keyringData = keyringData
 	infoForPopup.tabId = sender.tab.id;
+	console.log(infoForPopup)
 	launchWindow();
 }
 
@@ -106,7 +106,7 @@ var addContact = function(contact) {
 
 }
 
-var initialize = function() {
+var initializeSettings = function() {
 	chrome.storage.sync.set({
 		'displayMethod':'popup',
 		'editMethod':'popup',
@@ -116,5 +116,10 @@ var initialize = function() {
 	});
 }
 
+var keyringData
+loadKeyring(function(loadedKeyringData) {
+	keyringData = loadedKeyringData
+})
+
 chrome.runtime.onMessage.addListener(dispatcher)
-chrome.runtime.onInstalled.addListener(initialize)
+chrome.runtime.onInstalled.addListener(initializeSettings)
