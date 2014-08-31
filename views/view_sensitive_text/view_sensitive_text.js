@@ -52,24 +52,37 @@ var setupPopup = function(infoForPopup) {
 			//make the bootstrap input-group popout like its supposed to
 			$('.panel-body').css("background-color", "222222");
 
-			textarea = $('textarea')
+
+
+			TEXTAREA = $('textarea')
+			SEARCH_FIELD = $('#contactsearch')
+			SUGGESTION_BOX = $('ul')
 
 			//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
-			textarea.focus().val(popup.plaintext)
+			TEXTAREA.focus().val(popup.plaintext)
 
 			//escape key
-			textarea.on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
+			TEXTAREA.on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
 
 			//ctrl-enter
-			textarea.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
+			TEXTAREA.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
 
 			//fuzzy-search
-			searchField = $('#contactsearch')
-			searchField.on("keypress", function(e) {
+			SEARCH_FIELD.on("keypress", function(e) {
 				//todo: actually show this on the GUI
-				console.log(searchField.val())
-				console.log(keyring.fuzzySearch(searchField.val()))
+				console.log(SEARCH_FIELD.val())
+				console.log(keyring.fuzzySearch(SEARCH_FIELD.val()))
 			})
+
+
+			console.log("initiating jquery autocomplete")
+	        var data = ["One", "Two", "Three", "Google", "Good", "Great"];
+	        try {
+				SEARCH_FIELD.autocomplete({source: data})
+	        } catch (err) {
+	        	console.log(err);
+	        }
+	        console.log("success")
 			break;
 		default:
 			$('#error').html("developer mistake...invalid mode specified").show();
