@@ -7,9 +7,9 @@ function Keyring() {
 	/*******************************************
 	* Private Fields
 	*******************************************/
-	var keyCollection;
-	var nameKeys;
-	var count
+	var keyCollection; // an object mapping names to contact-data
+	var nameKeys; // an array of all the names in the keyCollection
+	var count; // a count of entries in keyCollection and nameKeys
 
 	/*******************************************
 	* Public Methods (with priveleged access)
@@ -60,6 +60,9 @@ function Keyring() {
 	 * @param {object} value [description]
 	 */
 	this.add = function(name, value) {
+		if (name == undefined || value == undefined)
+			throw new Error("Param cannot be null")
+
 		if (keyCollection[name] == undefined) {
 			keyCollection[name] = value;
 			nameKeys.push(name);
@@ -86,12 +89,15 @@ function Keyring() {
 	 */
 	this.remove = function(name) {
 		if (keyCollection[name] != undefined) {
+			console.group("Removing key enry"); console.debug(nameKeys)
+
 			delete keyCollection[name]
-			console.log(nameKeys)
 			nameKeys.splice(nameKeys.indexOf(name), 1)
-			console.log(nameKeys)
 			count--
+
+			console.debug(nameKeys);console.groupEnd()
 			return true
+
 		} else {
 			return false
 		}
