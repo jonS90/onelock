@@ -22,9 +22,6 @@ var loadKeyring = function(callback) {
 			callback(keyringData)
 	})
 }
-var saveKeyring = function(keyringData) {
-	chrome.storage.sync.set("keyring", keyringData) 
-}
 
 
 var dispatcher = function(message, sender, sendResponse) {
@@ -83,27 +80,37 @@ var showPlaintext = function(message, sender, sendResponse) {
 
 var addContact = function(contact) {
 	//todo: reject duplicate names and maybe duplicate keys.
-
-	console.group("Adding contact to keyring");
-	console.time("appended contact")
-
-	loadKeyring(function(keyringData) {
-
-		console.log(keyringData);
-
-		//update in memory
-		keyringData[keyringData.length] = contact;
-
-		console.log(keyringData);
-
-		//save to storage
-		chrome.storage.sync.set({keyring: keyringData}, function() {
-			console.timeEnd("appended contact")
-			console.groupEnd();
+	try{
+		console.group("Adding contact to keyring");
+		getKeyring(function(keyring) {
+			var success = keyring.add(contact.name, contact)
+			console.log("Added contact in memory: " + success)
+			putKeyring(keyring);
+			console.log("Saved updated keyring")
+			console.groupEnd()
 		})
+	}
+	catch (e) {
+		console.error(e.stack)
+		alert(e.stack)
+	}
+
+}
+
+/**
+ * This might be reusable. It just gets the keyring
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+var getKeyring = function(callback) {
+	var keyring = new Keyring();
+	chrome.storage.sync.get("keyring", function(data) {
+		keyring.loadData(data.keyring);
+		callback(keyring);
 	})
-
-
+}
+var putKeyring = function(keyring) {
+	chrome.storage.sync.set({keyring: keyring.getData()}) 
 }
 
 var initializeSettings = function() {
@@ -115,11 +122,6 @@ var initializeSettings = function() {
 		'publicKey':null
 	});
 }
-
-var keyringData
-loadKeyring(function(loadedKeyringData) {
-	keyringData = loadedKeyringData
-})
 
 chrome.runtime.onMessage.addListener(dispatcher)
 chrome.runtime.onInstalled.addListener(initializeSettings)

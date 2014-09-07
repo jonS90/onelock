@@ -1,9 +1,8 @@
 var keyring = {} //todo remove
 
-/****************************************
-* Public API
-****************************************/
-
+/**
+ * Keyring manages modifications to a keyring data structure. Can be persisted by storing the return value of getData(), and restoring with loadData().
+ */
 var Keyring = Keyring || {}
 
 function Keyring() {
@@ -28,14 +27,17 @@ function Keyring() {
 		this.initialize()
 	}
 	this.getData = function() {
-		//return a clone of the object
 		var keyData = {
 			keyCollection: keyCollection,
 			nameKeys: nameKeys,
 			count: count
 		}
+		console.group("exporting key")
+		console.log(keyData)
+		console.groupEnd()
 		return clone(keyData);
 	}
+
 	/**
 	 * Behavior is undefined unless you call this or loadData.
 	 * @return {[type]} [description]
@@ -45,6 +47,12 @@ function Keyring() {
 		nameKeys = nameKeys || []
 		count = count || 0
 	}
+
+	/**
+	 * Adds an entry tot he keyring
+	 * @param {string} name  [description]
+	 * @param {object} value [description]
+	 */
 	this.add = function(name, value) {
 		if (keyCollection[name] == undefined) {
 			keyCollection[name] = value;
@@ -55,6 +63,7 @@ function Keyring() {
 			return false
 		}
 	}	
+
 	/**
 	 * Gets the data for a name
 	 * @param  {string} name Name of contact
@@ -63,6 +72,7 @@ function Keyring() {
 	this.get = function(name) {
 		return clone(keyCollection[name])
 	}
+
 	/**
 	 * Removes the entry for the name
 	 * @param  {string} name 
@@ -94,62 +104,16 @@ function Keyring() {
 		});
 	}
 
+	/**
+	 * Returns a list of the unique names of everyone in the keyring.
+	 * @return {string[]} The array of names
+	 */
+	this.getNames = function() {
+		return clone(nameKeys);
+	}
+
 	// private methods ===========================
 	function clone(obj) {
 		return (obj == undefined) ? undefined : JSON.parse(JSON.stringify(obj))
 	}
 }
-
-/**
- * Initialize
- * @param  {object} keyring from chrome.storage
- */
-keyring.initialize = function(stored_keyring) {
-	keyring.list = stored_keyring
-
-	fuseOptions = {
-		caseSensitive: false,
-		shouldSort: true,
-		maxPatternLength: 32,
-		threshold: 0.6,
-		distance: 100,
-		keys: keyring.SEARCHKEYS
-	}
-	keyring.fuse = new Fuse(keyring.list, fuseOptions);
-}
-
-/**
- * Adds a contact to keyring. This isn't persistent, mind you...until you save keyring.getKeyringData()
- * @param {[type]} displayName
- * @param {[type]} publicKey
- */
-keyring.add = function(displayName, publicKey) {
-	throw "not implemented"
-
-	// I MAY or MAY NOT need to update Fuse for fuzzy search
-	//keyring.initialize(keyring.getKeyringData());
-
-	// Also, make sure you do some kind of format check on the publicKey
-}
-
-/**
- * Store the return value persistently, and you can restore the keyring's state in the future. 
- * @return {object} Object to be stored persistently
- */
-keyring.getKeyringData = function() {
-	return keyring.list
-}
-
-/**
- * Return a sorted list of fuzzy matches.
- * @return {[type]}
- */
-keyring.fuzzySearch = function(search_string) {
-	return keyring.fuse.search(search_string);
-}
-
-/****************************************
-* "Private" stuff
-****************************************/
-
-keyring.SEARCHKEYS = ["displayName"]

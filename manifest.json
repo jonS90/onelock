@@ -17,7 +17,7 @@
   ],
 
   "background": {
-    "scripts": [ "shared/enums.js", "core/eventPage.js"],
+    "scripts": [ "shared/keyring.js", "shared/enums.js", "core/eventPage.js"],
     // "page": "showPlaintext.html",
     "persistent": false
   },

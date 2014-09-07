@@ -24,18 +24,21 @@ $(function() {
 	}
 
 	SUBMIT_BUTTON.on('click', function() {
+		console.group("Submit")
 		if (!formIsValid) {
-			console.log("sdf");
 			STATUS.text("Please check for invalid fields")
 		} else {
 			var newcontact = {
 				type: enums.messageType.ADD_CONTACT,
-				displayName: CONTACT_NAME.val(),
+				name: CONTACT_NAME.val(),
+				signedName: COTNACT_NAME.val(),
 				publicKey: CONTACT_KEY.val()
 			}
 			chrome.runtime.sendMessage(newcontact);
+			console.debug(newcontact)
 			console.debug("sent message to add contact");
 		}
+		console.groupEnd()
 	})
 })
 
@@ -45,7 +48,9 @@ $(function() {
 var formIsValid = function() {
 	namePresent = CONTACT_NAME.val() != "" && CONTACT_NAME.val() != DEFAULT_NAME_VALUE;
 	keyPresent = utils.validatePublicKey(CONTACT_KEY.val());
-	console.log(namePresent)
-	console.log(keyPresent)
+	console.group("Form validation")
+	console.debug("name: " + namePresent)
+	console.debug("key: " + keyPresent)
+	console.groupEnd()
 	return namePresent && keyPresent;
 }

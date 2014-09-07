@@ -11,6 +11,8 @@ var popupWindow;
 chrome.windows.getCurrent(function(w) {
 	popup.window = w.id;
 });	
+
+
 closeWindow = function() {
 	if (popup.mode == "edit") {
 		var infoForPage = {
@@ -26,66 +28,60 @@ closeWindow = function() {
 }
 
 
-var testval; //debugging
+// setupPopup() will be used as a callback, but it needs access to the Keyring class. Instantiate here.
+var keyring = new Keyring()
+
 var setupPopup = function(infoForPopup) {
+	try {
+		console.group("Received from background");
+		console.log(infoForPopup);
+		console.groupEnd()
+		popup.mode = infoForPopup.mode;
+		popup.sendResponse = infoForPopup.sendResponse
+		popup.tabId = infoForPopup.tabId;
+		popup.node = infoForPopup.node;
+		popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
 	
-	testval = infoForPopup //debugging
-	popup.mode = infoForPopup.mode;
-	popup.sendResponse = infoForPopup.sendResponse
-	popup.tabId = infoForPopup.tabId;
-	popup.node = infoForPopup.node;
-	popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
+		keyring.loadData(infoForPopup.keyringData)
+	
+		$('.toggleable').hide();
+		switch(popup.mode) {
+			case "show":
+				$('#heading').text('decryption')
+				$('#show').html("<p>" + popup.plaintext.replace(/\n/g, "<br>") + "</p>").show();
+				break;
+			case "edit":
+				$('#heading').text('edit decrypted text')
+				$('#edit').show();
+				$('#edit').append("<textarea class='form-control' rows='4'>"+"</textarea>")
+	
+				//make the bootstrap input-group popout like its supposed to
+				$('.panel-body').css("background-color", "222222");
+	
+				TEXTAREA = $('textarea')
+				SEARCH_FIELD = $('#contactsearch')
+				SUGGESTION_BOX = $('ul')
+	
+				//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
+				TEXTAREA.focus().val(popup.plaintext)
+	
+				//escape key
+				TEXTAREA.on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
+	
+				//ctrl-enter
+				TEXTAREA.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
+	
+				SEARCH_FIELD.autocomplete({source: keyring.getNames()})
 
-	keyring.initialize(infoForPopup.keyringData)
-
-	$('.toggleable').hide();
-	switch(popup.mode) {
-		case "show":
-			$('#heading').text('decryption')
-			$('#show').html("<p>" + popup.plaintext.replace(/\n/g, "<br>") + "</p>").show();
-			break;
-		case "edit":
-			$('#heading').text('edit decrypted text')
-			$('#edit').show();
-			$('#edit').append("<textarea class='form-control' rows='4'>"+"</textarea>")
-
-			//make the bootstrap input-group popout like its supposed to
-			$('.panel-body').css("background-color", "222222");
-
-
-
-			TEXTAREA = $('textarea')
-			SEARCH_FIELD = $('#contactsearch')
-			SUGGESTION_BOX = $('ul')
-
-			//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
-			TEXTAREA.focus().val(popup.plaintext)
-
-			//escape key
-			TEXTAREA.on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
-
-			//ctrl-enter
-			TEXTAREA.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
-
-			//fuzzy-search
-			SEARCH_FIELD.on("keypress", function(e) {
-				//todo: actually show this on the GUI
-				console.log(SEARCH_FIELD.val())
-				console.log(keyring.fuzzySearch(SEARCH_FIELD.val()))
-			})
-
-
-			console.log("initiating jquery autocomplete")
-	        var data = ["One", "Two", "Three", "Google", "Good", "Great"];
-	        try {
-				SEARCH_FIELD.autocomplete({source: data})
-	        } catch (err) {
-	        	console.log(err);
-	        }
-	        console.log("success")
-			break;
-		default:
-			$('#error').html("developer mistake...invalid mode specified").show();
+				break;
+			default:
+				$('#error').html("developer mistake...invalid mode specified").show();
+		}
+	}
+	catch (e) {
+		console.groupEnd();
+		console.error(e.stack)
+		alert(e.stack)
 	}
 }
 
@@ -108,7 +104,8 @@ $(window).blur(
 	function() {
 		closingWindow = true;
 		lastTimer = window.setTimeout(function() {
-			closeWindow()
+			// TODO uncomment!!!!
+			//closeWindow()
 		}, 5000)
 	}
 );
