@@ -70,3 +70,87 @@ cipher.encryptText = function(plaintext) {
     var ciphertext  = CryptoJS.AES.encrypt(plaintext, password).toString();
     return ciphertext
 }
+
+var Cipher = Cipher || {}
+
+function Cipher(keyring, name) {
+	// settings
+	var DOUBLE_ENCRYPTION = false;
+	var DUMBY_KEY = "FFFFFFFFFFFF";
+
+	var privateKey
+	if (name) privateKey = keyring.get(name).privateKey;
+
+	/*******************************************
+	* Public Methods (with priveleged access)
+	*******************************************/
+
+	Cipher.decrypt = function(str) {
+		if (!privateKey)
+			throw new Error("Need privateKey to decrypt")
+
+		if (str == "") return ""
+		try {
+			if (DOUBLE_ENCRYPTION)
+				str = CryptoJS.AES.decrypt(str, DUMBY_KEY).toString(CryptoJS.enc.Utf8)
+			json = JSON.parse(str);
+			encryptedData = json.ciphertext;
+			encryptedKey = json.recipients[0].encryptedKey;
+	
+			plainKey = cipher.privDecrypter.decrypt(encryptedKey);
+			plaintext = CryptoJS.AES.decrypt(encryptedData, plainKey).toString(CryptoJS.enc.Utf8);
+			return plaintext;
+		} catch (err) {
+			return err.toString()
+		}
+	}
+	/**
+	 * Encrypts text so only given recipients can decrypt it. 
+	 * @param  {string} plainText  [description]
+	 * @param  {string[]} recipients [description]
+	 * @return {string}            Ciphertext
+	 */
+	Cipher.encrypt = function(plainText, recipients) {
+		if (!keyring)
+			throw new Error("Need a keyring to encrypt text")
+
+		plainKey = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+			return v.toString(16);
+		}); //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+		cipherText  = CryptoJS.AES.encrypt(plainText, plainKey).toString();
+	
+		if (recipients) { alert("not implemented"); }
+	
+		pubEncrypter = new JSEncrypt();
+		pubEncrypter.setPublicKey(cipher.keyring[0].publicKey);
+		encryptedKeys = []
+		encryptedKeys.push(pubEncrypter.encrypt(plainKey));
+	
+		json = {
+			"ciphertext": cipherText,
+			"recipients": [{"name":"bob", "encryptedKey":encryptedKeys[0]}]
+		}
+	
+		str = JSON.stringify(json)
+		if (DOUBLE_ENCRYPTION)
+			str = CryptoJS.AES.encrypt(str, DUMBY_KEY).toString();
+		return str;
+	}
+
+	/**
+	 * Encrypts texts so as to prove ownership of private key
+	 * @param  {[type]} plainText [description]
+	 * @return {[type]}           [description]
+	 */
+	Cipher.sign = function(plainText) {
+		throw new Error("not implemented")
+
+	}
+	/*******************************************
+	* Private Methods
+	*******************************************/
+	function clone(obj) {
+		return (obj == undefined) ? undefined : JSON.parse(JSON.stringify(obj))
+	}
+}
