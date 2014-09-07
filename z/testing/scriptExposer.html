@@ -1,3 +1,5 @@
+<script src="../../lib/jsencrypt.js"></script>
+<script src="../../lib/aes.js"></script>
 <body>
 <h3>Exposed scripts:</h3>
 <ul>
@@ -5,12 +7,17 @@
     keyring.js
     <script src="../../shared/keyring.js"></script>
     <script>
-      var k = new Keyring();
-      k.initialize();
-      k.add("Bob", "bob's stuff")
-      k.add("Joe", "joe's stuff")
-      k.add("Bill", "bill's stuff")
+      var k = Keyring.getTextKeyring();
     </script>
+  </li>
+  <li>
+  cipher.js
+  <script src="../../shared/cipher.js"></script>
+  <script>
+    var c = Cipher.getTestCipher();
+    c = Cipher.getTestCipher();
+    c2 = Cipher.getTestCipher2();
+  </script>
   </li>
   <li>
     utils.js

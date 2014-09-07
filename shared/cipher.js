@@ -27,7 +27,8 @@ cipher.decrypt = function(str) {
 		// if (plaintext == "") plaintext = "failed decryption"
 		return plaintext;
 	} catch (err) {
-		return err.toString()
+		throw (err)
+		return err.stack
 	}
 }
 
@@ -73,19 +74,27 @@ cipher.encryptText = function(plaintext) {
 
 var Cipher = Cipher || {}
 
+/**
+ * [Cipher description]
+ * @param {[type]} keyring [description]
+ * @param {[type]} name    [description]
+ * @throws {Error} If keyring not given
+ */
 function Cipher(keyring, name) {
+	if (!keyring || !name) throw new Error("Null params!") 
 	// settings
 	var DOUBLE_ENCRYPTION = false;
 	var DUMBY_KEY = "FFFFFFFFFFFF";
 
-	var privateKey
-	if (name) privateKey = keyring.get(name).privateKey;
+	privateKey = keyring.get(name).privateKey;
+
+	var privDecrypter;
 
 	/*******************************************
 	* Public Methods (with priveleged access)
 	*******************************************/
 
-	Cipher.decrypt = function(str) {
+	this.decrypt = function(str) {
 		if (!privateKey)
 			throw new Error("Need privateKey to decrypt")
 
@@ -95,44 +104,64 @@ function Cipher(keyring, name) {
 				str = CryptoJS.AES.decrypt(str, DUMBY_KEY).toString(CryptoJS.enc.Utf8)
 			json = JSON.parse(str);
 			encryptedData = json.ciphertext;
-			encryptedKey = json.recipients[0].encryptedKey;
+			encryptedKey = json.encryptedKeys[name];
 	
-			plainKey = cipher.privDecrypter.decrypt(encryptedKey);
+			plainKey = getDecrypter().decrypt(encryptedKey);
 			plaintext = CryptoJS.AES.decrypt(encryptedData, plainKey).toString(CryptoJS.enc.Utf8);
 			return plaintext;
 		} catch (err) {
-			return err.toString()
+			console.group("Decryption")
+			console.error(err.stack)
+			console.groupEnd()
+			return "Decryption failed"
 		}
 	}
 	/**
 	 * Encrypts text so only given recipients can decrypt it. 
-	 * @param  {string} plainText  [description]
-	 * @param  {string[]} recipients [description]
+	 * @param  {string} plainText  
+	 * @param  {string[]} recipients An array of names of recipients
 	 * @return {string}            Ciphertext
 	 */
-	Cipher.encrypt = function(plainText, recipients) {
+	this.encrypt = function(plainText, recipients) {
 		if (!keyring)
 			throw new Error("Need a keyring to encrypt text")
 
+		if (!recipients)
+			recipients = []
+
+		// ensure user's name is included
+		if (recipients.indexOf(name) == -1) {
+			recipients.push(name);
+		}
+
+		// generate random symmetric key
 		plainKey = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 		    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
 			return v.toString(16);
 		}); //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+
+		// encrypt the text with it
 		cipherText  = CryptoJS.AES.encrypt(plainText, plainKey).toString();
-	
-		if (recipients) { alert("not implemented"); }
-	
-		pubEncrypter = new JSEncrypt();
-		pubEncrypter.setPublicKey(cipher.keyring[0].publicKey);
-		encryptedKeys = []
-		encryptedKeys.push(pubEncrypter.encrypt(plainKey));
+
+		// encrypt the key with each recipient's public key
+		encryptedKeys = {}
+		recipients.forEach(function(recipient) {
+
+			if (!keyring.get(recipient))
+				throw new Error("Recipient not found: " + recipient)
+
+			pubEncrypter = new JSEncrypt();
+			pubEncrypter.setPublicKey(keyring.get(recipient).publicKey)
+			encryptedKeys[recipient] = pubEncrypter.encrypt(plainKey);
+		})
 	
 		json = {
 			"ciphertext": cipherText,
-			"recipients": [{"name":"bob", "encryptedKey":encryptedKeys[0]}]
+			"encryptedKeys": encryptedKeys
 		}
 	
 		str = JSON.stringify(json)
+
 		if (DOUBLE_ENCRYPTION)
 			str = CryptoJS.AES.encrypt(str, DUMBY_KEY).toString();
 		return str;
@@ -143,14 +172,30 @@ function Cipher(keyring, name) {
 	 * @param  {[type]} plainText [description]
 	 * @return {[type]}           [description]
 	 */
-	Cipher.sign = function(plainText) {
+	this.sign = function(plainText) {
 		throw new Error("not implemented")
-
 	}
+
 	/*******************************************
 	* Private Methods
 	*******************************************/
 	function clone(obj) {
 		return (obj == undefined) ? undefined : JSON.parse(JSON.stringify(obj))
 	}
+	function getDecrypter() {
+		if (!privDecrypter) {
+			privDecrypter = new JSEncrypt();
+			privDecrypter.setPrivateKey(privateKey);
+		}
+		return privDecrypter
+	}
+}
+
+Cipher.getTestCipher = function() {
+	var c = new Cipher(Keyring.getTestKeyring(), "Alice") 
+	return c
+}
+Cipher.getTestCipher2 = function() {
+	var c = new Cipher(Keyring.getTestKeyring2(), "Bob") 
+	return c
 }
