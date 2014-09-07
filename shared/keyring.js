@@ -1,19 +1,20 @@
-var keyring = {} //todo remove
-
 /**
  * Keyring manages modifications to a keyring data structure. Can be persisted by storing the return value of getData(), and restoring with loadData().
  */
 var Keyring = Keyring || {}
 
 function Keyring() {
-	//http://javascript.crockford.com/private.html
-
-	//private fields ============================
+	/*******************************************
+	* Private Fields
+	*******************************************/
 	var keyCollection;
 	var nameKeys;
 	var count
 
-	//public (but privileged) methods ===========
+	/*******************************************
+	* Public Methods (with priveleged access)
+	*******************************************/
+
 	/**
 	 * Behavior is undefined unless you call this or initialize()
 	 * @param  {[type]} retrievedData [description]
@@ -26,6 +27,11 @@ function Keyring() {
 
 		this.initialize()
 	}
+	/**
+	 * Returns an object which can be used to restore the keyring. 
+	 * (This exists because chrome storage strips objects of their functions)
+	 * @return {[type]} [description]
+	 */
 	this.getData = function() {
 		var keyData = {
 			keyCollection: keyCollection,
@@ -90,6 +96,7 @@ function Keyring() {
 			return false
 		}
 	}
+
 	/**
 	 * Iterates through all keys in keyring
 	 * @param  {function} func Called as function(name, data)
@@ -112,7 +119,10 @@ function Keyring() {
 		return clone(nameKeys);
 	}
 
-	// private methods ===========================
+	/*******************************************
+	* Private Methods
+	*******************************************/
+
 	function clone(obj) {
 		return (obj == undefined) ? undefined : JSON.parse(JSON.stringify(obj))
 	}
