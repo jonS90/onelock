@@ -1,4 +1,10 @@
-keyring is an array where each element has the following attributes:
-  id 
-  displayName
-  publicKey
+The keyring structure has been abstracted away by keyring.js. We can just accept that it's magic. 
+
+Key entries themselves have not been abstracted away (though they probably ought to be). Their structure is planned as follows:
+
+KeyEntry
+{
+	signedName: String,
+	publicKey: String,
+	[privateKey: String]
+}
