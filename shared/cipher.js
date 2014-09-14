@@ -211,3 +211,7 @@ Cipher.getTestCipherBob = function() {
 	var c = new Cipher(Keyring.getTestKeyringBob(), "Bob") 
 	return c
 }
+Cipher.getTestKeyringFresh = function() {
+	var c = new Cipher(Keyring.getTestKeyRingFresh(), "Newbie")
+
+}

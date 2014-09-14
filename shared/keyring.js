@@ -170,3 +170,12 @@ Keyring.getTestKeyringBob = function() {
 	})
 	return k
 }
+Keyring.getTestKeyringFresh = function() {
+	var k = new Keyring();
+	k.initialize();
+	k.add("Newbie", {
+		signedName: "John Smith",
+		privateKey: "-----BEGIN RSA PRIVATE KEY-----\nMIICXgIBAAKBgQDEpbQHa1xksJl9TD69v2sL2q045PI8CZefKjR25mlwh0tRm8Vm\nEn1355tBwdocX20THOEW3ddvgSXtDidRJ891FuywbSVOwjYKe7U0wjAfF/eSh0zN\nfMkJU+fmN7RQI7u+BVnIL8ruun0wU8W/8EFia3IOmYzXNARJTbTvXqXCAwIDAQAB\nAoGAU5q7gpgDjQ+EAkBjQFrckQqksNatohbV7qaL7a0iUOREgmq+rxnXXB4M5RUc\nvQlZH1Ic5JLmoBKBZFqrHpbVXQwW6Gu2Jfb8Df3tSI4B3/cHIzwmmP5YqB1GdjgW\njU8dA8m+0izUVXXuFBLX0akeX29SIuYQ+GODrNvbbS4SBYkCQQD1eOyY+gwqSN1f\nvYpnmiLAnOz76/gTtXR3b1I7ODH0ayF9wmeXPbDILq1ETXMuzQUpXvNVImmeNeKV\nqFFT+Yt3AkEAzRS4twwuRNA3aLE8h33xA3fqpwtW9+LH4br288uWvb3Khqq8nXQO\nNqGpX9PXscCUz3hFgHM5zrJUPMO9Qd8I1QJBAMbUN/CBOTFW69kM0fqw4s1ZTquP\nqtVr+PZ0+Qp2rh/oVqxitz3N/k9nX3kfstiJwFCOVFL1GM/JncrTF20JiGkCQQCS\n+JG0JReXmzzKW5JMa7ZozOyukBLgjXa/z9ShPTsnebeFsSCBGqYBAvQ2R8Rhj+lV\nkhUFDA7WkbiK36Bnb6aNAkEA3DGtGP6N+8xTXjJqgETPcqak2AdJ80Q1o0SkBoFi\nXhJX8k8NWQXma0ktsenaLhr/rmja23oamIoQk4ixOfPFeg==\n-----END RSA PRIVATE KEY-----",
+		publicKey: "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEpbQHa1xksJl9TD69v2sL2q04\n5PI8CZefKjR25mlwh0tRm8VmEn1355tBwdocX20THOEW3ddvgSXtDidRJ891Fuyw\nbSVOwjYKe7U0wjAfF/eSh0zNfMkJU+fmN7RQI7u+BVnIL8ruun0wU8W/8EFia3IO\nmYzXNARJTbTvXqXCAwIDAQAB\n-----END PUBLIC KEY-----"
+	})
+}
