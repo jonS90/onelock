@@ -1,5 +1,11 @@
 <script src="../../lib/jsencrypt.js"></script>
 <script src="../../lib/aes.js"></script>
+<script>
+crypt = new JSEncrypt();
+    privateKey = "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgHVoeZNm0mcNFGYJdlwT38XM6M6Mr9Wj7m4Fn5KYpjJssF1MzjGr\neTTH/wC1E1qDpi3jtxfCAlbfEeOTChPywDRQzYXzslU0xQZSvgE0F2OZOj7a5FBj\n6iHJiD0az7s0RClEAT1elJM5zYXua7RdxhYVp3EcydxobAq4OI0vupYPAgMBAAEC\ngYBBy62uLEYnGA5hbFYXHdAeskmZTwBPEpJQt/gIGGGzCnP/pUY8UaMYMCg4xkE1\nTWe4ec+mkcPr2RDWXxWbvkN1iyZ6cjZQ6TW2qx/kyX+eJxbmHEGIe7inHqdi8k8T\nAPtXsih+eQuPT+sAJ+4FmwVuPyeoRf/agt+MmriRO/rmaQJBALqqdpBTFSKFpSl2\nsNVGtEvD+ggZq74CInn/gyxoZ3IYEYDlUP6cDSs5i6EehpWU0zQywBdvQd+eImuj\nMJl6eB0CQQChBHvnm7QIhsxvoFqSfZKg7LGUp0U8dTXxL9fbao8ql7XVDKdkfowK\niHZTa5Kiu8f37AOPKCYRmNT0XZJBOacbAkAeshNnLlJmZ+W+CMeRetwBLYv7MwV7\n7Gvw9eSDM/P23iBautrz04OS3Rap+xQUmvGUPtg5wlDpzd5JJv/B7VK9AkEAjwzc\nx7edCrY3ijR8Qwks66tdWSQCbuPzOIO40kapSr3d3ZmQXcfPwsvZ0+MOM2WBEtGr\nl9Ojfp65EyDOfwQpYQJBAK0YFSC41AHFaDZ5XaHg2DKyahC9APfAaGFnwXliaGd3\nWZSBXKB/914+eQvJllawTkjKg1peqJ0EK0IBkK3k8yQ=\n-----END RSA PRIVATE KEY-----"
+    publicKey = "-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHVoeZNm0mcNFGYJdlwT38XM6M6M\nr9Wj7m4Fn5KYpjJssF1MzjGreTTH/wC1E1qDpi3jtxfCAlbfEeOTChPywDRQzYXz\nslU0xQZSvgE0F2OZOj7a5FBj6iHJiD0az7s0RClEAT1elJM5zYXua7RdxhYVp3Ec\nydxobAq4OI0vupYPAgMBAAE=\n-----END PUBLIC KEY-----"
+crypt.setPrivateKey(privateKey);
+</script>
 <body>
 <h3>Exposed scripts:</h3>
 <ul>
@@ -7,7 +13,8 @@
     keyring.js
     <script src="../../shared/keyring.js"></script>
     <script>
-      var k = Keyring.getTestKeyringAlice();
+      var ka = Keyring.getTestKeyringAlice();
+      var kb = Keyring.getTestKeyringBob();
     </script>
   </li>
   <li>

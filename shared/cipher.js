@@ -185,7 +185,9 @@ function Cipher(keyring, name) {
 	 * @return {[type]}           [description]
 	 */
 	this.sign = function(plainText) {
-		throw new Error("not implemented")
+		var signer = new JSEncrypt();
+		signer.setPublicKey();
+		//!!!!! I"M HERE
 	}
 
 	/*******************************************

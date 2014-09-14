@@ -20,9 +20,13 @@ utils.validatePublicKey = function(str) {
  * Creates a sharable string to send to friends
  * @param  {KeyEntry} keyEntry  [description]
  * @return {String}             A sharable string others can use to import contact info
- * @throws {Error}    If privateKey is not present in keyEntry
+ * @throws {Error}    			If privateKey is not present in keyEntry
  */
 utils.exportKey = function(keyEntry) {
+	output = {};
+	output.signedName = keyEntry.signedName;
+	output.publicKey = keyEntry.publicKey;
+	return JSON.stringify(output)
 }
 
 /**
@@ -31,5 +35,9 @@ utils.exportKey = function(keyEntry) {
  * @return {KeyEntry}     Valid contact info you can add to keyring
  */
 utils.importKey = function(str) {
-
+	imported = JSON.parse(str);
+	keyEntry = {};
+	keyEntry.signedName = imported.signedName;
+	keyEntry.publicKey = imported.publicKey;
+	return keyEntry
 }
