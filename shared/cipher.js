@@ -138,6 +138,9 @@ function Cipher(keyring, name) {
 		if (!recipients)
 			recipients = []
 
+		if (!(recipients instanceof Array))
+			throw new Error("Recipients is not an array");
+
 		// ensure user's name is included
 		if (recipients.indexOf(name) == -1) {
 			recipients.push(name);

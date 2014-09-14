@@ -7,19 +7,29 @@ var infoForPopup = {
 	mode: "not set",
 	node: null,
 	sendResponse: null,
-	keyringData: null
 };
 
+var keyring;
+var ownerName;
 
-var loadKeyring = function(callback) {
-	chrome.storage.sync.get("keyring", function(data) {
-		var keyringData = data.keyring
-		if (keyringData.length == undefined) {
-			alert("new keyring made") //todo don't leave this here
-			keyringData = []
+var loadStuff = function(callback) {
+	console.group("Loading keyring")
+	chrome.storage.sync.get(["keyring", "ownerName"], function(data) {
+		ownerName = data.ownerName;						console.assert(ownerName, "Owner not specified!!");
+		var keyringData = data.keyring;					console.log(keyringData);
+		keyring = new Keyring();
+		if (keyringData == undefined) {
+			console.log("Initialized brand new keyring!");
+			keyring.initialize();
+		} else {
+			keyring.loadData(keyringData)
+			console.log("Loaded keyring data");
 		}
+
 		if (callback)
-			callback(keyringData)
+			callback(keyringData);
+
+		console.groupEnd("Loading keyring");
 	})
 }
 
@@ -37,6 +47,8 @@ var dispatcher = function(message, sender, sendResponse) {
 	case (enums.messageType.GET_CIPHERTEXT):
 		//from view_sensitive_text popup to eventPage
 		sendResponse(infoForPopup)
+		console.log("Sent info to popup")
+		console.groupEnd("Launch sensitive-text viewer")
 		break;
 	case (enums.messageType.ADD_CONTACT):
 		//from add_contact form to eventPage
@@ -58,6 +70,7 @@ var showPageAction = function() {
 }
 
 var showPlaintext = function(message, sender, sendResponse) {
+	console.group("Launch sensitive-text viewer")
 	var launchWindow = function() {
 		var w = 405 
 		var h = (message.editable) ? 300 : 250
@@ -72,7 +85,8 @@ var showPlaintext = function(message, sender, sendResponse) {
 	infoForPopup.ciphertext = message.ciphertext;
 	infoForPopup.node = message.node
 	infoForPopup.sendResponse = sendResponse
-	infoForPopup.keyringData = keyringData
+	infoForPopup.keyringData = keyring.getData();
+	infoForPopup.ownerName = ownerName;
 	infoForPopup.tabId = sender.tab.id;
 	console.log(infoForPopup)
 	launchWindow();
@@ -85,7 +99,8 @@ var addContact = function(contact) {
 		getKeyring(function(keyring) {
 			var success = keyring.add(contact.name, contact)
 			console.log("Added contact in memory: " + success)
-			putKeyring(keyring);
+			// 
+			throw "not implemented"
 			console.log("Saved updated keyring")
 			console.groupEnd()
 		})
@@ -95,22 +110,6 @@ var addContact = function(contact) {
 		alert(e.stack)
 	}
 
-}
-
-/**
- * This might be reusable. It just gets the keyring
- * @param  {Function} callback [description]
- * @return {[type]}            [description]
- */
-var getKeyring = function(callback) {
-	var keyring = new Keyring();
-	chrome.storage.sync.get("keyring", function(data) {
-		keyring.loadData(data.keyring);
-		callback(keyring);
-	})
-}
-var putKeyring = function(keyring) {
-	chrome.storage.sync.set({keyring: keyring.getData()}) 
 }
 
 var initializeSettings = function() {
@@ -123,5 +122,15 @@ var initializeSettings = function() {
 	});
 }
 
+/******************************************
+* Stop defining stuff and start doing stuff
+*******************************************/
+// erase keyring
+// chrome.storage.sync.remove("keyring"); // for testing!!!!!
+
+loadStuff(function() {
+	keyring = Keyring.getTestKeyringAlice(); // todo: don't leave this here
+	ownerName = "Alice"; //todo: don't leave this here
+})
 chrome.runtime.onMessage.addListener(dispatcher)
 chrome.runtime.onInstalled.addListener(initializeSettings)

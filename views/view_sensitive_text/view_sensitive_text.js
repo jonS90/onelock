@@ -12,13 +12,17 @@ chrome.windows.getCurrent(function(w) {
 	popup.window = w.id;
 });	
 
+var SEARCH_FIELD = $('#contactsearch')
+var TEXTAREA = $('textarea')
+
 
 closeWindow = function() {
+
 	if (popup.mode == "edit") {
 		var infoForPage = {
 			type: "return ciphertext",
 			nodeId: popup.node.id,
-			ciphertext: cipher.encrypt($('textarea').val())
+			ciphertext: cipher.encrypt(TEXTAREA.val(), [SEARCH_FIELD.val()])
 		}
 
 		chrome.tabs.sendMessage(popup.tabId, infoForPage);
@@ -44,7 +48,7 @@ var setupPopup = function(infoForPopup) {
 	
 		keyring = new Keyring();
 		keyring.loadData(infoForPopup.keyringData)
-		cipher = new Cipher(keyring, infoForPopup.name)
+		cipher = new Cipher(keyring, infoForPopup.ownerName)
 		popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
 	
 		$('.toggleable').hide();
@@ -61,8 +65,6 @@ var setupPopup = function(infoForPopup) {
 				//make the bootstrap input-group popout like its supposed to
 				$('.panel-body').css("background-color", "222222");
 	
-				TEXTAREA = $('textarea')
-				SEARCH_FIELD = $('#contactsearch')
 				SUGGESTION_BOX = $('ul')
 	
 				//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
