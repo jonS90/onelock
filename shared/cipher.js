@@ -75,9 +75,9 @@ cipher.encryptText = function(plaintext) {
 var Cipher = Cipher || {}
 
 /**
- * [Cipher description]
+ * Cipher provides methods to for encryption.
  * @param {[type]} keyring [description]
- * @param {[type]} name    [description]
+ * @param {[type]} name    The owner of the keyring (you know, the one with the private key)
  * @throws {Error} If keyring not given
  */
 function Cipher(keyring, name) {
@@ -86,7 +86,7 @@ function Cipher(keyring, name) {
 	var DOUBLE_ENCRYPTION = false;
 	var DUMBY_KEY = "FFFFFFFFFFFF";
 
-	privateKey = keyring.get(name).privateKey;
+	var privateKey = keyring.get(name).privateKey;
 
 	var privDecrypter;
 
@@ -105,8 +105,15 @@ function Cipher(keyring, name) {
 			json = JSON.parse(str);
 			encryptedData = json.ciphertext;
 			encryptedKey = json.encryptedKeys[name];
+
+			if (!encryptedKey)
+				throw new Error("This message isn't meant for " + name)
 	
 			plainKey = getDecrypter().decrypt(encryptedKey);
+
+			if (!plainKey)
+				throw new Error("Could not decrypt symmetric key. Invalid publ/priv key?")
+
 			plaintext = CryptoJS.AES.decrypt(encryptedData, plainKey).toString(CryptoJS.enc.Utf8);
 			return plaintext;
 		} catch (err) {
@@ -123,6 +130,8 @@ function Cipher(keyring, name) {
 	 * @return {string}            Ciphertext
 	 */
 	this.encrypt = function(plainText, recipients) {
+		console.group("Encryption")
+
 		if (!keyring)
 			throw new Error("Need a keyring to encrypt text")
 
@@ -139,6 +148,7 @@ function Cipher(keyring, name) {
 		    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
 			return v.toString(16);
 		}); //http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+		console.log("symmetric key: " + plainKey);
 
 		// encrypt the text with it
 		cipherText  = CryptoJS.AES.encrypt(plainText, plainKey).toString();
@@ -152,7 +162,9 @@ function Cipher(keyring, name) {
 
 			pubEncrypter = new JSEncrypt();
 			pubEncrypter.setPublicKey(keyring.get(recipient).publicKey)
+			console.log("Using public Key: " + keyring.get(recipient).publicKey)
 			encryptedKeys[recipient] = pubEncrypter.encrypt(plainKey);
+			console.log("Encrypted key: " + encryptedKeys[recipient])
 		})
 	
 		json = {
@@ -191,11 +203,11 @@ function Cipher(keyring, name) {
 	}
 }
 
-Cipher.getTestCipher = function() {
-	var c = new Cipher(Keyring.getTestKeyring(), "Alice") 
+Cipher.getTestCipherAlice = function() {
+	var c = new Cipher(Keyring.getTestKeyringAlice(), "Alice") 
 	return c
 }
-Cipher.getTestCipher2 = function() {
-	var c = new Cipher(Keyring.getTestKeyring2(), "Bob") 
+Cipher.getTestCipherBob = function() {
+	var c = new Cipher(Keyring.getTestKeyringBob(), "Bob") 
 	return c
 }

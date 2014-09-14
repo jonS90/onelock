@@ -7,16 +7,15 @@
     keyring.js
     <script src="../../shared/keyring.js"></script>
     <script>
-      var k = Keyring.getTextKeyring();
+      var k = Keyring.getTestKeyringAlice();
     </script>
   </li>
   <li>
   cipher.js
   <script src="../../shared/cipher.js"></script>
   <script>
-    var c = Cipher.getTestCipher();
-    c = Cipher.getTestCipher();
-    c2 = Cipher.getTestCipher2();
+    var cb = Cipher.getTestCipherBob();
+    var ca = Cipher.getTestCipherAlice();
   </script>
   </li>
   <li>

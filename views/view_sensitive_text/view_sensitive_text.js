@@ -28,8 +28,9 @@ closeWindow = function() {
 }
 
 
-// setupPopup() will be used as a callback, but it needs access to the Keyring class. Instantiate here.
+// setupPopup() will be used as a callback, but it needs access to these classes. Instantiate here.
 var keyring = new Keyring()
+var Cipher_ = Cipher; 
 
 var setupPopup = function(infoForPopup) {
 	try {
@@ -40,9 +41,11 @@ var setupPopup = function(infoForPopup) {
 		popup.sendResponse = infoForPopup.sendResponse
 		popup.tabId = infoForPopup.tabId;
 		popup.node = infoForPopup.node;
-		popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
 	
+		keyring = new Keyring();
 		keyring.loadData(infoForPopup.keyringData)
+		cipher = new Cipher(keyring, infoForPopup.name)
+		popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
 	
 		$('.toggleable').hide();
 		switch(popup.mode) {
