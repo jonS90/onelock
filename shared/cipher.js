@@ -207,7 +207,14 @@ function Cipher(keyring, name) {
 		return privDecrypter
 	}
 }
-
+Cipher.generateKey = function(callback) {
+	console.time("Generate key");
+    var crypt = new JSEncrypt({default_key_size: 1024}); //1024
+    crypt.getKey(function() {
+    	console.timeEnd("Generate key")
+    	callback(crypt.getPrivateKey(), crypt.getPublicKey())
+    });
+}
 Cipher.getTestCipherAlice = function() {
 	var c = new Cipher(Keyring.getTestKeyringAlice(), "Alice") 
 	return c
