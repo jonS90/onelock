@@ -1,1 +1,80 @@
-<h1>setup</h1>
+<html>
+  <head>
+    <script src="../../lib/jquery.min.js"></script>
+    <script src="../../shared/enums.js"></script>
+    <script src="../../lib/bootstrap.min.js"></script>
+    <link href="../../lib/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../lib/google-code-prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../../lib/google-code-prettify/prettify.js"></script>
+    <script src="setup.js"></script>
+    <title>PGP surf settings</title>
+    <style>
+      body {
+        /*min-width: 357px;*/
+        min-width: 307px;
+        overflow-x: hidden;
+        padding:20px;
+        margin:
+      }
+      /*
+      img {
+        margin: 5px;
+        border: 2px solid black;
+        vertical-align: middle;
+        width: 75px;
+        height: 75px;
+      } */
+    </style>
+  </head>
+  <body>
+
+<h1> Setup </h1>
+<div class="panel panel-warn">
+  Generate your personal key.
+  Import an old key.
+</div>
+<p>Please follow these steps to get up and running. <bold class="status"></bold></p> 
+<div class="panel panel-default">
+      <div class="panel-heading">
+    <h3>1. Encryption keys</h3>
+    You need to get yourself some encryption keys. This app does not have key generation implemented, so you'll have to use openssl. Please run this in the terminal:
+<pre class="prettyprint" style="width:40%;height:250px">
+# generate private key
+openssl genrsa -out PRIV_KEY.tmp 2048
+# compute public key from private key
+openssl rsa -pubout -in PRIV_KEY.tmp -out PUBL.KEY.tmp
+
+# print keys
+cat PRIV_KEY.tmp
+cat PUBL.KEY.tmp
+
+# clean up
+rm PRIV_KEY.tmp
+rm PUBL.KEY.tmp
+</pre>
+	If you're using Windows......I don't know what to tell you.
+      </div>
+<div class="panel-body" id="encryptionkeys_body">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>A. Copy your private key here:</h4>
+      </div>
+      <div class="panel-body">
+        <textarea id="private-key" style="width:50%;height:300px"></textarea>    
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>B. Copy your public key here:</h4>
+      </div>
+      <div class="panel-body">
+        <textarea id="public-key" style="width:50%;height:300px"></textarea>    
+      </div>
+    </div>
+</div>
+</div> <!-- panel panel-default -->
+<input type="button" class="btn btn-success" value="Submit" ></input>
+<x class="status"></x>
+  </body>
+</html>
