@@ -31,8 +31,21 @@
     </style>
   </head>
   <body>
-
-<h1 style="text-align:center">PGP for Chrome</h1>
+<div id="navigation">
+  <div>
+    <div>
+      <div class="btn-group" style="margin-left: 20px;position: fixed;margin-top: 20px;" >
+        <button class="btn btn-default" id="backward"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button class="btn btn-default" id="forward"><span class="glyphicon glyphicon-chevron-right"></span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div id="navigation" class="pull-left" style="margin-left:400px">
+  <button class="btn btn-default"><span class="glyphicon glyphicon-chevron-left" id="backward"></span></button>
+  <button class="btn btn-default"><span class="glyphicon glyphicon-chevron-right" id="forward"></span></button>
+</div>
+ --><h1 style="text-align:center">PGP for Chrome</h1>
 <div id="methodPrompt" style="text-align:center">
 <!-- <h1 style="text-align:center" > Setup </h1> -->
   <div class="panel panel-success" style="display:inline-block;text-align:center">
@@ -57,7 +70,7 @@
     </div>
   </div>
   <div class="row" id="terminalHowTo">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <pre class="prettyprint" style="height:250px">
 # generate private key
 openssl genrsa -out PRIV_KEY.tmp 2048

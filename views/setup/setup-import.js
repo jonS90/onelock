@@ -116,7 +116,7 @@ $(function() {
   restore_fields();
 
   // EVENTS
-  SHOWHOWTO_LNK.on('click', function() {HOWTO.toggle()})
+  SHOWHOWTO_LNK.on('click', function() {HOWTO.slideToggle()})
   PRIVATE_KEY.on('focus', function() {PRIVATE_KEY.css('background-color', 'white') })
   PRIVATE_KEY.on('blur', function()  {validateKeyFields("private")});
   PUBLIC_KEY.on('focus', function()  {PUBLIC_KEY.css('background-color', 'white') })
