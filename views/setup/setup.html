@@ -15,7 +15,10 @@
         min-width: 307px;
         overflow-x: hidden;
         padding:20px;
-        margin:
+      }
+      textarea {
+        height: 240px;
+        width: 100%;
       }
       /*
       img {
@@ -29,6 +32,7 @@
   </head>
   <body>
 
+<h1 style="text-align:center">PGP for Chrome</h1>
 <div id="methodPrompt" style="text-align:center">
 <!-- <h1 style="text-align:center" > Setup </h1> -->
   <div class="panel panel-success" style="display:inline-block;text-align:center">
@@ -45,13 +49,16 @@
 
 
 
-<div id="importKey">
-  <p><bold class="status"></bold></p> 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3>1. Encryption keys</h3>
-      <div id="terminalHowTo">
-        <pre class="prettyprint" style="width:40%;height:250px">
+<div class="container" id="importKey">
+  <div class="row">
+    <div class="col-md-12">
+      <p>To see how you can generate your own key in the terminal, click <a data-role="page" href="#" id="showHowTo">here</a></p>
+      <bold class="status"></bold>
+    </div>
+  </div>
+  <div class="row" id="terminalHowTo">
+    <div class="col-md-6">
+      <pre class="prettyprint" style="height:250px">
 # generate private key
 openssl genrsa -out PRIV_KEY.tmp 2048
 # compute public key from private key
@@ -64,30 +71,37 @@ cat PUBL.KEY.tmp
 # clean up
 rm PRIV_KEY.tmp
 rm PUBL.KEY.tmp
-        </pre>
-      </div>
+      </pre>
     </div>
-    <div class="panel-body" id="encryptionkeys_body">
-      <div class="panel panel-default">
+  </div> <!-- terminal how to -->
+  <div class="row" style="" >
+    <div class="col-md-6" >
+      <div class="panel panel-primary" style="" >
         <div class="panel-heading">
-          <h4>A. Copy your private key here:</h4>
+          <h3 class="panel-title">A. Copy your private key here:</h3>
         </div>
         <div class="panel-body">
-          <textarea id="private-key" style="width:50%;height:300px"></textarea>    
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4>B. Copy your public key here:</h4>
-        </div>
-        <div class="panel-body">
-          <textarea id="public-key" style="width:50%;height:300px"></textarea>    
+          <textarea id="private-key" zstyle="width:100%;height:100%"></textarea>    
         </div>
       </div>
     </div>
-  </div> <!-- panel panel-default -->
-  <input type="button" class="btn btn-success" value="Submit" ></input>
-  <x class="status"></x>
+    <div class="col-md-6" >
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">B. Copy your public key here:</h3>
+        </div>
+        <div class="panel-body">
+          <textarea id="public-key" zstyle="width:50%;height:300px"></textarea>    
+        </div>
+      </div>
+    </div>
+  </div> <!-- row -->
+  <div class="row">
+    <div class="col-md-1">
+      <input type="button" class="btn btn-success" value="Submit" ></input>
+    </div>
+    <x class="status"></x>
+  </div>
 </div>
 
   </body>

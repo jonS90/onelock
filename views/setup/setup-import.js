@@ -100,6 +100,8 @@ validateKeyFields = function(option) {
 ****************************************************/
 $(function() {
   // VARIABLES
+  SHOWHOWTO_LNK = $('#showHowTo');
+  HOWTO = $('#terminalHowTo');
   PRIVATE_KEY = $('#private-key');
   PUBLIC_KEY = $('#public-key');
   STATUS = $('.status');
@@ -109,10 +111,12 @@ $(function() {
   prettyPrint();
 
   SUBMIT.prop( "disabled", true );
+  HOWTO.hide();
 
   restore_fields();
 
   // EVENTS
+  SHOWHOWTO_LNK.on('click', function() {HOWTO.toggle()})
   PRIVATE_KEY.on('focus', function() {PRIVATE_KEY.css('background-color', 'white') })
   PRIVATE_KEY.on('blur', function()  {validateKeyFields("private")});
   PUBLIC_KEY.on('focus', function()  {PUBLIC_KEY.css('background-color', 'white') })
