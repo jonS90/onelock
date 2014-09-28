@@ -4,6 +4,6 @@
 	facebook: bool,
 	privateKey: string, //this should go inside keyring
 	publicKey: string, //this should go inside keyring
-	name: string, // the name that the owner signs
-	keyring: Keyring.getData()
+	ownerName: string, // the name that the owner signs
+	keyringData: Keyring.getData()
 }

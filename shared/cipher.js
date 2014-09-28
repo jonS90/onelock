@@ -161,7 +161,7 @@ function Cipher(keyring, name) {
 		recipients.forEach(function(recipient) {
 
 			if (!keyring.get(recipient))
-				throw new Error("Recipient not found: " + recipient)
+				throw new Error("Recipient not found: \"" + recipient + "\"");
 
 			pubEncrypter = new JSEncrypt();
 			pubEncrypter.setPublicKey(keyring.get(recipient).publicKey)

@@ -38,7 +38,7 @@ function Keyring() {
 			nameKeys: nameKeys,
 			count: count
 		}
-		console.group("exporting key")
+		console.group("Exporting key")
 		console.log(keyData)
 		console.groupEnd()
 		return clone(keyData);

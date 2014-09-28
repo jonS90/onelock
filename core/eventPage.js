@@ -1,3 +1,4 @@
+var TESTING = true
 
 // Initialize a state variable. 
 // The content script sends info to this eventPage, which must forward it to a new popup page.
@@ -14,21 +15,28 @@ var ownerName;
 
 var loadStuff = function(callback) {
 	console.group("Loading keyring")
-	chrome.storage.sync.get(["keyring", "ownerName"], function(data) {
-		ownerName = data.ownerName;						console.assert(ownerName, "Owner not specified!!");
-		var keyringData = data.keyring;					console.log(keyringData);
+	chrome.storage.sync.get(["keyringData", "ownerName"], function(data) {
+		ownerName = data.ownerName;						
+		var keyringData = data.keyringData;							console.log(keyringData);
+
 		keyring = new Keyring();
-		if (keyringData == undefined) {
-			console.log("Initialized brand new keyring!");
+
+		// first launch
+		if (!keyringData) {
+			console.log("First launch detected");
 			keyring.initialize();
+
+			initializeSettingsForFirstLaunch(callback);
+
+		// normal launch
 		} else {
-			keyring.loadData(keyringData)
+			keyring.loadData(keyringData);
 			console.log("Loaded keyring data");
+			if (callback)
+				callback(keyringData);
+
+			console.assert(ownerName, "Owner must be specified");
 		}
-
-		if (callback)
-			callback(keyringData);
-
 		console.groupEnd("Loading keyring");
 	})
 }
@@ -112,25 +120,51 @@ var addContact = function(contact) {
 
 }
 
-var initializeSettings = function() {
-	chrome.storage.sync.set({
+var initializeSettingsForFirstLaunch = function(callback) {
+	console.log("Initializing first-launch settings");
+	var settings = {
 		'displayMethod':'popup',
 		'editMethod':'popup',
 		'facebook':false,
 		'privateKey':null,
 		'publicKey':null
-	});
+	};
+	if (TESTING) {
+		settings['ownerName'] = "Jon Smithers";
+		console.log("(testing mode on)")
+	}
+	chrome.storage.sync.set(settings, callback);
+}
+
+var setTestSettings = function(callback) {
+	var settings = {
+		'keyringData': Keyring.getTestKeyringAlice().getData(),
+		'ownerName': "Alice",
+		'displayMethod':'popup',
+		'editMethod':'popup',
+		'facebook':false,
+		'privateKey':null,
+		'publicKey':null
+	}
+	chrome.storage.sync.set(settings, callback);
+	console.log("Initialized settings for TESTING");
+
 }
 
 /******************************************
 * Stop defining stuff and start doing stuff
 *******************************************/
-// erase keyring
-// chrome.storage.sync.remove("keyring"); // for testing!!!!!
 
-loadStuff(function() {
-	keyring = Keyring.getTestKeyringAlice(); // todo: don't leave this here
-	ownerName = "Alice"; //todo: don't leave this here
-})
+if (!TESTING) 
+	loadStuff();
+else
+	setTestSettings(
+		loadStuff
+	);
+
 chrome.runtime.onMessage.addListener(dispatcher)
-chrome.runtime.onInstalled.addListener(initializeSettings)
+chrome.runtime.onInstalled.addListener(function() {
+	var createProperties = {url: chrome.extension.getURL('views/setup/setup.html')};
+	chrome.tabs.create(createProperties);
+	// (onInstalled includes updates)
+})
