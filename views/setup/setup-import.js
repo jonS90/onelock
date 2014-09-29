@@ -38,62 +38,6 @@ function restore_fields() {
   });
 }
 
-/**
- * Returns true if argument looks like a valid private key, otherwise false. 
- * @param  string str
- * @returns {boolean} Whether or not it looks valid. 
- */
-validate_private_key = function(str) {
-  begStr = "-----BEGIN RSA PRIVATE KEY-----";
-  endStr = "-----END RSA PRIVATE KEY-----";
-
-  if (str.indexOf(begStr) == 0 &&
-    str.indexOf(endStr) == (str.length-endStr.length))
-    return true
-  else 
-    return false;
-}
-
-/**
- * Returns true if argument looks like a valid private key, otherwise false. 
- * @param  string str
- * @returns {boolean} Whether or not it looks valid. 
- */
-validate_public_key = function(str) {
-  begStr = "-----BEGIN PUBLIC KEY-----";
-  endStr = "-----END PUBLIC KEY-----";
-
-  if (str.indexOf(begStr) == 0 &&
-    str.indexOf(endStr) == (str.length-endStr.length))
-    return true
-  else 
-    return false;
-}
-
-
-
-validateForm = function() {
-  if (validate_private_key(PRIVATE_KEY.val()) && validate_public_key(PUBLIC_KEY.val())) {
-    return true;
-  }
-}
-validateKeyFields = function(option) {
-  switch (option) {
-    case ("private"):
-      object = PRIVATE_KEY
-      check = validate_private_key
-      break;
-    case ("public"):
-      object = PUBLIC_KEY
-      check = validate_public_key
-      break;
-    default: throw "neither public nor private"
-  }
-  if (check(object.val())) 
-    object.css('background-color', 'green');
-  else
-    object.css('background-color', 'red');
-}
 
 /****************************************************
 * Main
@@ -105,29 +49,74 @@ $(function() {
   PRIVATE_KEY = $('#private-key');
   PUBLIC_KEY = $('#public-key');
   STATUS = $('.status');
-  SUBMIT = $('input.btn-success');
+  SUBMIT = $('#import-next');
+
+  function colorField(object, x) {
+    if (x == -1) {
+      object.addClass("bg-danger");
+      object.removeClass("bg-success");
+    } else if (x == 1) {
+      object.addClass("bg-success");
+      object.removeClass("bg-danger");
+    } else if (x == 0) {
+      object.removeClass("bg-danger");
+      object.removeClass("bg-success");
+    }
+  }
+  function validateAndEnable() {
+    //trim spaces off
+    PRIVATE_KEY.val(PRIVATE_KEY.val().trim());
+    PUBLIC_KEY.val(PUBLIC_KEY.val().trim());
+
+    if (utils.validatePublicKey(PUBLIC_KEY.val()) && utils.validatePrivateKey(PRIVATE_KEY.val())) {
+      SUBMIT.removeClass("disabled");
+    } else {
+      SUBMIT.addClass('disabled');
+    }
+  }
+
+  function validateAndColor() {
+    //trim spaces off
+    PRIVATE_KEY.val(PRIVATE_KEY.val().trim());
+    PUBLIC_KEY.val(PUBLIC_KEY.val().trim());
+
+    var color;
+
+    if (PRIVATE_KEY.val() != "") {
+      color = utils.validatePrivateKey(PRIVATE_KEY.val()) ? 1 : -1;
+    } else {
+      color = 0; 
+    }
+    colorField(PRIVATE_KEY, color);
+
+    if (PUBLIC_KEY.val() != "") {
+      color = utils.validatePublicKey(PUBLIC_KEY.val()) ? 1 : -1;
+    } else {
+      color = 0;
+    }
+    colorField(PUBLIC_KEY, color);
+  }
 
   // pretty print the code block shown for user-instruction
   prettyPrint();
 
-  SUBMIT.prop( "disabled", true );
+  SUBMIT.addClass('disabled');
   HOWTO.hide();
 
   restore_fields();
 
   // EVENTS
   SHOWHOWTO_LNK.on('click', function() {HOWTO.slideToggle()})
-  PRIVATE_KEY.on('focus', function() {PRIVATE_KEY.css('background-color', 'white') })
-  PRIVATE_KEY.on('blur', function()  {validateKeyFields("private")});
-  PUBLIC_KEY.on('focus', function()  {PUBLIC_KEY.css('background-color', 'white') })
-  PUBLIC_KEY.on('blur', function()   {validateKeyFields("public")});
+  // PRIVATE_KEY.on('focus', function() { colorField(PRIVATE_KEY, 0) })
+  // PRIVATE_KEY.on('blur', function()  { colorField(PRIVATE_KEY, PRIVATE_KEY.val().trim() && utils.validatePrivateKey(PRIVATE_KEY.val().trim()) ? 1 : -1) });
+  // PUBLIC_KEY.on('focus', function()  { colorField(PUBLIC_KEY, 0) })
+  // PUBLIC_KEY.on('blur', function()   { colorField(PUBLIC_KEY, PUBLIC_KEY.val().trim() && utils.validatePrivateKey(PUBLIC_KEY.val().trim()) ? 1 : -1) });
 
-  $('textarea').on('change', function() { 
-    SUBMIT.prop("disabled", !validateForm()); 
-  });
+  $('textarea').on('keyup', validateAndColor);
+  $('textarea').on('keyup', validateAndEnable);
 
   SUBMIT.on('click', function() {
-    if (validateForm()) {
+    if (!SUBMIT.hasClass('disabled')) {
       save_fields();
     }
   })

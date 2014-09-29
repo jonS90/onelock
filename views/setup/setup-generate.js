@@ -7,6 +7,7 @@ function generateKey() {
   var SHOW_PRIV = $('#show-priv');
   var SHOW_PUB = $('#show-pub');
   var AFTER_GEN = $('.done-generating');
+  var NEXT_BTN = $('#generate-next');
   /* END DUPLICATE CODE */
   Cipher.generateKey(function(privKey, pubKey) {
     SHOW_PUB.text(pubKey);
@@ -27,14 +28,12 @@ $(function() {
   var SHOW_PRIV = $('#show-priv');
   var SHOW_PUB = $('#show-pub');
   var AFTER_GEN = $('.done-generating');
+  var NEXT_BTN = $('#generate-next');
   /* END DUPLICATE CODE */
 
   AFTER_GEN.hide();
   SHOW_KEYS_DIV.hide();
 
-  console.log("WORK!!!")
-  console.log(SHOW_KEYS_BTN)
-  console.log(SHOW_KEYS_BTN.html());
   SHOW_KEYS_BTN.on('click', function() {
     console.log("hi")
     SHOW_KEYS_DIV.slideToggle();

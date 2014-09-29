@@ -7,6 +7,12 @@ $(function() {
 	GENERATEKEY_DIV = $('#generateKeyPage');
 	GENERATE_BTN = $('#generateBtn');
 	IMPORT_BTN = $('#importBtn');
+	GENERATE_NEXT_BTN = $('#generate-next');
+	IMPORT_NEXT_BTN = $('#import-next');
+	NAME_NEXT_BTN = $('#name-next');
+	NAME_DIV = $('#name-prompt');
+	DONE_DIV = $('#all-done');
+
 
 	DURATION = 600;
 
@@ -16,13 +22,12 @@ $(function() {
 
 	function fromTo(from, to, callback) {
 		NAVIGATION.fadeIn(1000);
-		BACK_BTN.removeClass("disabled");
-		FORWARD_BTN.addClass("disabled");
 		pageFuture = [];
 		pageHistory.push(pageCurrent);
 		pageCurrent = to;
 		to.slideDown(DURATION);
 		from.hide(DURATION);
+		updateEnabledButtons();
 		if (callback)
 			callback();
 	}
@@ -31,21 +36,32 @@ $(function() {
 		pageFuture.push(pageCurrent);
 		pageCurrent = pageHistory.pop();
 		pageCurrent.show(DURATION);
-		BACK_BTN.addClass("disabled");
-		FORWARD_BTN.removeClass("disabled");
+		updateEnabledButtons();
 	}
 	function goForward() {
 		pageCurrent.hide(DURATION);
 		pageHistory.push(pageCurrent);
 		pageCurrent = pageFuture.pop();
 		pageCurrent.slideDown(DURATION);
-		BACK_BTN.removeClass("disabled");
-		FORWARD_BTN.removeClass("disabled");
+		updateEnabledButtons();
+	}
+	function updateEnabledButtons() {
+		if (pageHistory.length != 0)
+			BACK_BTN.removeClass("disabled");
+		else
+			BACK_BTN.addClass("disabled");
+
+		if (pageFuture.length != 0) 
+			FORWARD_BTN.removeClass("disabled");
+		else
+			FORWARD_BTN.addClass("disabled");
 	}
 
 	IMPORTKEY_DIV.hide();
 	GENERATEKEY_DIV.hide();
 	NAVIGATION.hide();
+	NAME_DIV.hide();
+	DONE_DIV.hide();
 	BACK_BTN.addClass("disabled");
 	FORWARD_BTN.addClass("disabled");
 
@@ -57,8 +73,21 @@ $(function() {
 		window.location.hash = "#generating_keys"
 		fromTo(PROMPT, GENERATEKEY_DIV, generateKey);
 	})
+	GENERATE_NEXT_BTN.on('click', function() {
+		window.location.hash = "#name";
+		fromTo(GENERATEKEY_DIV, NAME_DIV);
+	})
+	NAME_NEXT_BTN.on('click', function() {
+		window.location.hash="#done";
+		fromTo(NAME_DIV, DONE_DIV);
+	})
+	IMPORT_NEXT_BTN.on('click', function() {
+		window.location.hash="#name";
+		fromTo(IMPORTKEY_DIV, NAME_DIV);
+	})
 	BACK_BTN.on('click', goBack);
 	FORWARD_BTN.on('click', goForward);
+
 
 
 })

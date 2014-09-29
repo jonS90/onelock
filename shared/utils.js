@@ -16,6 +16,17 @@ utils.validatePublicKey = function(str) {
     return false;
 }
 
+utils.validatePrivateKey = function(str) {
+  begStr = "-----BEGIN RSA PRIVATE KEY-----";
+  endStr = "-----END RSA PRIVATE KEY-----";
+
+  if (str.indexOf(begStr) == 0 &&
+    str.indexOf(endStr) == (str.length-endStr.length))
+    return true
+  else 
+    return false;
+}
+
 /**
  * Creates a sharable string to send to friends
  * @param  {KeyEntry} keyEntry  [description]

@@ -7,9 +7,11 @@
     <script src="../../lib/jsencrypt.js"></script>
     <script src="../../shared/enums.js"></script>
     <script src="../../shared/cipher.js"></script>
+    <script src="../../shared/utils.js"></script>
     <script type="text/javascript" src="../../lib/google-code-prettify/prettify.js"></script>
     <script src="setup-import.js"></script>
     <script src="setup-generate.js"></script>
+    <script src="setup-name.js"></script>
     <script src="setup.js"></script>
     <title>PGP surf settings</title>
     <style>
@@ -114,7 +116,7 @@ rm PUBL.KEY.tmp
   </div> <!-- row -->
   <div class="row">
     <div class="col-md-1">
-      <input type="button" class="btn btn-success" value="Submit" ></input>
+      <button class="btn btn-primary" id="import-next">Next<span class="glyphicon glyphicon-chevron-right"></span></button>
     </div>
     <x class="status"></x>
   </div>
@@ -137,7 +139,7 @@ rm PUBL.KEY.tmp
       </div>
       <div class="panel panel-body">
         <p class="text-info" id="genstatus">Just a moment, please...</p>
-        <button class="btn btn-primary done-generating" >Next<span class="glyphicon glyphicon-chevron-right"></span></button>
+        <button class="btn btn-primary done-generating" id="generate-next">Next<span class="glyphicon glyphicon-chevron-right"></span></button>
         <button class="btn btn-default done-generating" id="show-keys-btn">Show the key</button>
       </div>
     </div>
@@ -168,7 +170,39 @@ rm PUBL.KEY.tmp
   </div> <!-- container -->
 </div>
 
+<div id="name-prompt">
+  <center>
+    <div class="panel panel-primary" style="display:inline-block">
+      <div class="panel panel-heading">
+       <h3 class="panel-title">Setup</h3> 
+      </div>
+      <div class="panel panel-body">
+        <p class="text-default">We need a name for you.</p><p class="text-info">This is how you'll show up in your buddies' contacts.</p>
+        <input placeholder="Full name" class="form-control" id="name-input"></input><br>
+        <div style="text-align:left">
+          <button class="btn btn-primary" id="name-next">Next<span class="glyphicon glyphicon-chevron-right"></span></button>
+        </div>
+      </div>
+    </div>
+  </center>
+</div>
 
+
+<div id="all-done">
+  <center>
+    <div class="panel panel-success" style="display:inline-block">
+      <div class="panel panel-heading">
+        <h3 class="panel-title">Setup</h3>
+      </div>
+      <div class="panel panel-body">
+        <p class="text-success">Next? There is no next. You're done!</p>
+        <div style="text-align:left">
+          <button class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span> Cool</button>
+        </div>
+      </div>
+    </div>
+  </center>
+</div>
 
 
 
