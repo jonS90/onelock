@@ -25,17 +25,17 @@ $(function() {
 		pageFuture = [];
 		pageHistory.push(pageCurrent);
 		pageCurrent = to;
-		to.slideDown(DURATION);
-		from.hide(DURATION);
+		to.slideDown(DURATION, "easeOutCirc");
+		from.hide(DURATION, "swing");
 		updateEnabledButtons();
 		if (callback)
 			callback();
 	}
 	function goBack() {
-		pageCurrent.slideUp(DURATION);
+		pageCurrent.slideUp(DURATION, "swing");
 		pageFuture.push(pageCurrent);
 		pageCurrent = pageHistory.pop();
-		pageCurrent.show(DURATION);
+		pageCurrent.show(DURATION, "easeOutCirc");
 		updateEnabledButtons();
 	}
 	function goForward() {
