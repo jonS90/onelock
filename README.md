@@ -1,10 +1,12 @@
-PGP for Chrome
+OneLock
 ==============
 
-A chrome extension which permits a new model of security for web applications.
+One Lock to rule them all! A chrome extension which brings a new model of security to normal web applications.
 
-### Why does this exist?
+#### Why does this exist?
 
-Today's web applications need you to trust them. Chatting with your friend over Facebook, you're trusting Facebook to protect the conversation you're routing through Facebook's servers. When a web application distributes your data to the wrong people, or lets malicious hackers get at it, your trust is violated and you might not like others seeing your stuff. PGP-for-Chrome eliminates that need for trust. 
+Today's web applications run on trust. You have to trust them to protect your privacy and protect your information from malicious hackers. The problem is, violations of trust happen from time to time despite many best efforts.
 
-How? Well, it's all in the name. PGP is a program folks use to to encrypt stuff so that only the intended recipients are capable of decrypting it. That way, it doesn't matter if the servers are insecure. PGP-for-Chrome brings this model of encryption to general web-browsing; it no longer matters how untrustworthy a web-application is. Only you decide who can decrypt your stuff.
+When a web service transmits a message from you to a friend, there's a lot of potential holes along the way where it can be leaked or stolen. Rather than trust every web-service to secure every little hole, why not trust one little tool to secure the whole thing at once? OneLock is that tool. It eliminates the need to trust web apps. You decide who can see you're stuff by encrypting it such that only the recipients you *choose* can ever decrypt it.
+
+This kind of encryption is called public-key cryptography. It's been around for a while, and has been widely used in other areas. It's never been ported to general web applications, but now, there is OneLock!
