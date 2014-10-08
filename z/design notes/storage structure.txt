@@ -7,3 +7,16 @@
 	ownerName: string, // the name that the owner signs
 	keyringData: Keyring.getData()
 }
+
+
+
+An idea for settings:
+{
+	settings: {
+		facebook: {
+			url: string,
+			enableOneLock: enum,
+			highlighNodes: enum
+		}
+	}
+}

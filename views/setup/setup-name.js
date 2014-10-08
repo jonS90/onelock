@@ -14,4 +14,9 @@ $(function() {
 
 
 	NEXT_BTN.addClass("disabled");
+
+	NEXT_BTN.on('click', function() {
+		fieldValues.signedName = INPUT.val();
+		storeFieldValues();
+	})
 })

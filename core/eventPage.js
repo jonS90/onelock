@@ -1,4 +1,4 @@
-var TESTING = true
+var TESTING = false
 
 // Initialize a state variable. 
 // The content script sends info to this eventPage, which must forward it to a new popup page.
@@ -39,6 +39,20 @@ var loadStuff = function(callback) {
 		}
 		console.groupEnd("Loading keyring");
 	})
+}
+
+var saveStuff = function(callback) {
+	console.group("Saving stuff");
+	console.log("keyring");
+	chrome.storage.sync.set({
+		keyringData: keyring.getData()
+	}, function() {
+		console.groupEnd("Saving stuff");
+		if (callback) {
+			callback();
+		}
+	})
+
 }
 
 
@@ -100,18 +114,24 @@ var showPlaintext = function(message, sender, sendResponse) {
 	launchWindow();
 }
 
-var addContact = function(contact) {
+var addContact = function(message) {
+	var contact = message.contact;
+	var overwrite = message.overwrite;
+	var signedName = contact.signedName;
+
 	//todo: reject duplicate names and maybe duplicate keys.
+
 	try{
 		console.group("Adding contact to keyring");
-		getKeyring(function(keyring) {
-			var success = keyring.add(contact.name, contact)
-			console.log("Added contact in memory: " + success)
-			// 
-			throw "not implemented"
+		if (overwrite && keyring.get(signedName)) {
+			keyring.remove(signedName);
+		}
+		var success = keyring.add(signedName, contact);
+		console.log("Added contact in memory: " + success)
+		saveStuff(function() {
 			console.log("Saved updated keyring")
 			console.groupEnd()
-		})
+		});
 	}
 	catch (e) {
 		console.error(e.stack)
@@ -150,6 +170,8 @@ var setTestSettings = function(callback) {
 	console.log("Initialized settings for TESTING");
 
 }
+
+// chrome.storage.sync.set({keyringData: null});
 
 /******************************************
 * Stop defining stuff and start doing stuff

@@ -38,4 +38,9 @@ $(function() {
     console.log("hi")
     SHOW_KEYS_DIV.slideToggle();
   })
+
+  NEXT_BTN.on('click', function() {
+    fieldValues.privateKey = SHOW_PRIV.text();
+    fieldValues.publicKey = SHOW_PRIV.text();
+  })
 })

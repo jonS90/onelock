@@ -107,13 +107,12 @@ $(function() {
 
   // EVENTS
   SHOWHOWTO_LNK.on('click', function() {HOWTO.slideToggle()})
-  // PRIVATE_KEY.on('focus', function() { colorField(PRIVATE_KEY, 0) })
-  // PRIVATE_KEY.on('blur', function()  { colorField(PRIVATE_KEY, PRIVATE_KEY.val().trim() && utils.validatePrivateKey(PRIVATE_KEY.val().trim()) ? 1 : -1) });
-  // PUBLIC_KEY.on('focus', function()  { colorField(PUBLIC_KEY, 0) })
-  // PUBLIC_KEY.on('blur', function()   { colorField(PUBLIC_KEY, PUBLIC_KEY.val().trim() && utils.validatePrivateKey(PUBLIC_KEY.val().trim()) ? 1 : -1) });
-
   $('textarea').on('keyup', validateAndColor);
   $('textarea').on('keyup', validateAndEnable);
+  SUBMIT.on('click', function() {
+    fieldValues.privateKey = PRIVATE_KEY.val();
+    fieldValues.publicKey = PUBLIC_KEY.val();
+  })
 
   SUBMIT.on('click', function() {
     if (!SUBMIT.hasClass('disabled')) {

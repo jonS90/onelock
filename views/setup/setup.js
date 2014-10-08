@@ -1,3 +1,28 @@
+// every "next" button will store stuff to this
+fieldValues = {
+  publicKey: -1,
+  privateKey: -1,
+  signedName: -1,
+};
+
+storeFieldValues = function() {
+	chrome.storage.sync.set({
+		ownerName: fieldValues.signedName,
+	});
+	var contact = {
+		signedName: fieldValues.signedName, 
+		privateKey: fieldValues.privateKey,
+		publicKey: fieldValues.publicKey,
+	};
+	chrome.runtime.sendMessage({
+		type: enums.messageType.ADD_CONTACT,
+		contact: contact,
+		overwrite: true
+	});
+}
+
+
+
 $(function() {
 	NAVIGATION = $('#navigation');
 	BACK_BTN = $('#backward');
