@@ -1,7 +1,7 @@
 /**
  * Keyring manages modifications to a keyring data structure. Can be persisted by storing the return value of getData(), and restoring with loadData().
  */
-var Keyring = Keyring || {}
+var Keyring = Keyring || {};
 
 function Keyring() {
 	/*******************************************
@@ -21,12 +21,12 @@ function Keyring() {
 	 * @return {[type]}               [description]
 	 */
 	this.loadData = function(retrievedData) {
-		keyCollection = retrievedData.keyCollection
-		nameKeys = retrievedData.nameKeys
-		count = retrievedData.count
+		keyCollection = retrievedData.keyCollection;
+		nameKeys = retrievedData.nameKeys;
+		count = retrievedData.count;
 
-		this.initialize()
-	}
+		this.initialize();
+	};
 	/**
 	 * Returns an object which can be used to restore the keyring. 
 	 * (This exists because chrome storage strips objects of their functions)
@@ -37,22 +37,22 @@ function Keyring() {
 			keyCollection: keyCollection,
 			nameKeys: nameKeys,
 			count: count
-		}
-		console.group("Exporting key")
-		console.log(keyData)
-		console.groupEnd()
+		};
+		console.group("Exporting key");
+		console.log(keyData);
+		console.groupEnd();
 		return clone(keyData);
-	}
+	};
 
 	/**
 	 * Behavior is undefined unless you call this or loadData.
 	 * @return {[type]} [description]
 	 */
 	this.initialize = function() {
-		keyCollection = keyCollection || {}
-		nameKeys = nameKeys || []
-		count = count || 0
-	}
+		keyCollection = keyCollection || {};
+		nameKeys = nameKeys || [];
+		count = count || 0;
+	};
 
 	/**
 	 * Adds an entry tot he keyring
@@ -60,18 +60,18 @@ function Keyring() {
 	 * @param {object} value [description]
 	 */
 	this.add = function(name, value) {
-		if (name == undefined || value == undefined)
-			throw new Error("Param cannot be null")
+		if (name === undefined || value === undefined)
+			throw new Error("Param cannot be null");
 
-		if (keyCollection[name] == undefined) {
+		if (keyCollection[name] === undefined) {
 			keyCollection[name] = value;
 			nameKeys.push(name);
-			count++
-			return true
+			count++;
+			return true;
 		} else {
-			return false
+			return false;
 		}
-	}	
+	};
 
 	/**
 	 * Gets the data for a name
@@ -79,8 +79,8 @@ function Keyring() {
 	 * @return {object}      Undefined if not found.
 	 */
 	this.get = function(name) {
-		return clone(keyCollection[name])
-	}
+		return clone(keyCollection[name]);
+	};
 
 	/**
 	 * Removes the entry for the name
@@ -88,20 +88,20 @@ function Keyring() {
 	 * @return {boolean}      True if item removed, false if not found.
 	 */
 	this.remove = function(name) {
-		if (keyCollection[name] != undefined) {
-			console.group("Removing key enry"); console.debug(nameKeys)
+		if (keyCollection[name] !== undefined) {
+			console.group("Removing key enry"); console.debug(nameKeys);
 
-			delete keyCollection[name]
-			nameKeys.splice(nameKeys.indexOf(name), 1)
-			count--
+			delete keyCollection[name];
+			nameKeys.splice(nameKeys.indexOf(name), 1);
+			count--;
 
-			console.debug(nameKeys);console.groupEnd()
-			return true
+			console.debug(nameKeys);console.groupEnd();
+			return true;
 
 		} else {
-			return false
+			return false;
 		}
-	}
+	};
 
 	/**
 	 * Iterates through all keys in keyring
@@ -109,13 +109,13 @@ function Keyring() {
 	 */
 	this.forEach = function(func) {
 		//prepare access to this.get()
-		var scopeGet = this.get
+		var scopeGet = this.get;
 
 		nameKeys.forEach(function(nameKey) {
-			func(nameKey, scopeGet(nameKey))
+			func(nameKey, scopeGet(nameKey));
 			//func(name, clone(keyCollection[name]))
 		});
-	}
+	};
 
 	/**
 	 * Returns a list of the unique names of everyone in the keyring.
@@ -123,14 +123,14 @@ function Keyring() {
 	 */
 	this.getNames = function() {
 		return clone(nameKeys);
-	}
+	};
 
 	/*******************************************
 	* Private Methods
 	*******************************************/
 
 	function clone(obj) {
-		return (obj == undefined) ? undefined : JSON.parse(JSON.stringify(obj))
+		return (obj === undefined) ? undefined : JSON.parse(JSON.stringify(obj));
 	}
 }
 
@@ -145,13 +145,13 @@ Keyring.getTestKeyringAlice = function() {
 	k.add("Bob", {
 		signedName: "Billy Bob",
 		publicKey: "-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHVoeZNm0mcNFGYJdlwT38XM6M6M\nr9Wj7m4Fn5KYpjJssF1MzjGreTTH/wC1E1qDpi3jtxfCAlbfEeOTChPywDRQzYXz\nslU0xQZSvgE0F2OZOj7a5FBj6iHJiD0az7s0RClEAT1elJM5zYXua7RdxhYVp3Ec\nydxobAq4OI0vupYPAgMBAAE=\n-----END PUBLIC KEY-----"
-	})
+	});
 	k.add("Freddy Freud", {
 		signedName: "Freddy Freud",
 		publicKey: "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvhr1doOTcOSyDvmrKGiZbB3sa02tp6tPOyHss31dhvJkOYGlJXTQuFsIAd+H+PIaDTEh4yguWh/q9T7SxDdDbUMDtZop0gtuWxTmmm2sTxjUpZA4RpAKVgOtwDTsGkceKVKk36O+asziW/UlgC940F7ZDUIzjR8oEJA0ot/mDRTFqkirYarFg10XnIjFW2Re3yoZHPNuP3Dpr7obLExmNwK0alllBd/50/htzY2lCWOLrGuhdUuf9JJ6+YZrVlZ0gpkA1620uNItcor6E/BKSMuxoax833viav+P1mZ2DRKjgu+rsVaerrxCibEOU/SGsVJMU/YiGbU2Qv7kQa0n0QIDAQAB-----END PUBLIC KEY-----"
-	})
-	return k
-}
+	});
+	return k;
+};
 Keyring.getTestKeyringBob = function() {
 	var k = new Keyring();
 	k.initialize();
@@ -163,13 +163,13 @@ Keyring.getTestKeyringBob = function() {
 		signedName: "Billy Bob",
 		privateKey: "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgHVoeZNm0mcNFGYJdlwT38XM6M6Mr9Wj7m4Fn5KYpjJssF1MzjGr\neTTH/wC1E1qDpi3jtxfCAlbfEeOTChPywDRQzYXzslU0xQZSvgE0F2OZOj7a5FBj\n6iHJiD0az7s0RClEAT1elJM5zYXua7RdxhYVp3EcydxobAq4OI0vupYPAgMBAAEC\ngYBBy62uLEYnGA5hbFYXHdAeskmZTwBPEpJQt/gIGGGzCnP/pUY8UaMYMCg4xkE1\nTWe4ec+mkcPr2RDWXxWbvkN1iyZ6cjZQ6TW2qx/kyX+eJxbmHEGIe7inHqdi8k8T\nAPtXsih+eQuPT+sAJ+4FmwVuPyeoRf/agt+MmriRO/rmaQJBALqqdpBTFSKFpSl2\nsNVGtEvD+ggZq74CInn/gyxoZ3IYEYDlUP6cDSs5i6EehpWU0zQywBdvQd+eImuj\nMJl6eB0CQQChBHvnm7QIhsxvoFqSfZKg7LGUp0U8dTXxL9fbao8ql7XVDKdkfowK\niHZTa5Kiu8f37AOPKCYRmNT0XZJBOacbAkAeshNnLlJmZ+W+CMeRetwBLYv7MwV7\n7Gvw9eSDM/P23iBautrz04OS3Rap+xQUmvGUPtg5wlDpzd5JJv/B7VK9AkEAjwzc\nx7edCrY3ijR8Qwks66tdWSQCbuPzOIO40kapSr3d3ZmQXcfPwsvZ0+MOM2WBEtGr\nl9Ojfp65EyDOfwQpYQJBAK0YFSC41AHFaDZ5XaHg2DKyahC9APfAaGFnwXliaGd3\nWZSBXKB/914+eQvJllawTkjKg1peqJ0EK0IBkK3k8yQ=\n-----END RSA PRIVATE KEY-----",
 		publicKey: "-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHVoeZNm0mcNFGYJdlwT38XM6M6M\nr9Wj7m4Fn5KYpjJssF1MzjGreTTH/wC1E1qDpi3jtxfCAlbfEeOTChPywDRQzYXz\nslU0xQZSvgE0F2OZOj7a5FBj6iHJiD0az7s0RClEAT1elJM5zYXua7RdxhYVp3Ec\nydxobAq4OI0vupYPAgMBAAE=\n-----END PUBLIC KEY-----"
-	})
+	});
 	k.add("Freddy Freud", {
 		signedName: "Freddy Freud",
 		publicKey: "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvhr1doOTcOSyDvmrKGiZbB3sa02tp6tPOyHss31dhvJkOYGlJXTQuFsIAd+H+PIaDTEh4yguWh/q9T7SxDdDbUMDtZop0gtuWxTmmm2sTxjUpZA4RpAKVgOtwDTsGkceKVKk36O+asziW/UlgC940F7ZDUIzjR8oEJA0ot/mDRTFqkirYarFg10XnIjFW2Re3yoZHPNuP3Dpr7obLExmNwK0alllBd/50/htzY2lCWOLrGuhdUuf9JJ6+YZrVlZ0gpkA1620uNItcor6E/BKSMuxoax833viav+P1mZ2DRKjgu+rsVaerrxCibEOU/SGsVJMU/YiGbU2Qv7kQa0n0QIDAQAB-----END PUBLIC KEY-----"
-	})
-	return k
-}
+	});
+	return k;
+};
 Keyring.getTestKeyringFresh = function() {
 	var k = new Keyring();
 	k.initialize();
@@ -177,5 +177,5 @@ Keyring.getTestKeyringFresh = function() {
 		signedName: "John Smith",
 		privateKey: "-----BEGIN RSA PRIVATE KEY-----\nMIICXgIBAAKBgQDEpbQHa1xksJl9TD69v2sL2q045PI8CZefKjR25mlwh0tRm8Vm\nEn1355tBwdocX20THOEW3ddvgSXtDidRJ891FuywbSVOwjYKe7U0wjAfF/eSh0zN\nfMkJU+fmN7RQI7u+BVnIL8ruun0wU8W/8EFia3IOmYzXNARJTbTvXqXCAwIDAQAB\nAoGAU5q7gpgDjQ+EAkBjQFrckQqksNatohbV7qaL7a0iUOREgmq+rxnXXB4M5RUc\nvQlZH1Ic5JLmoBKBZFqrHpbVXQwW6Gu2Jfb8Df3tSI4B3/cHIzwmmP5YqB1GdjgW\njU8dA8m+0izUVXXuFBLX0akeX29SIuYQ+GODrNvbbS4SBYkCQQD1eOyY+gwqSN1f\nvYpnmiLAnOz76/gTtXR3b1I7ODH0ayF9wmeXPbDILq1ETXMuzQUpXvNVImmeNeKV\nqFFT+Yt3AkEAzRS4twwuRNA3aLE8h33xA3fqpwtW9+LH4br288uWvb3Khqq8nXQO\nNqGpX9PXscCUz3hFgHM5zrJUPMO9Qd8I1QJBAMbUN/CBOTFW69kM0fqw4s1ZTquP\nqtVr+PZ0+Qp2rh/oVqxitz3N/k9nX3kfstiJwFCOVFL1GM/JncrTF20JiGkCQQCS\n+JG0JReXmzzKW5JMa7ZozOyukBLgjXa/z9ShPTsnebeFsSCBGqYBAvQ2R8Rhj+lV\nkhUFDA7WkbiK36Bnb6aNAkEA3DGtGP6N+8xTXjJqgETPcqak2AdJ80Q1o0SkBoFi\nXhJX8k8NWQXma0ktsenaLhr/rmja23oamIoQk4ixOfPFeg==\n-----END RSA PRIVATE KEY-----",
 		publicKey: "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEpbQHa1xksJl9TD69v2sL2q04\n5PI8CZefKjR25mlwh0tRm8VmEn1355tBwdocX20THOEW3ddvgSXtDidRJ891Fuyw\nbSVOwjYKe7U0wjAfF/eSh0zNfMkJU+fmN7RQI7u+BVnIL8ruun0wU8W/8EFia3IO\nmYzXNARJTbTvXqXCAwIDAQAB\n-----END PUBLIC KEY-----"
-	})
-}
+	});
+};

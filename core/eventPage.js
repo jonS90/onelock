@@ -1,10 +1,10 @@
-var TESTING = false
+var TESTING = false;
 
-// Initialize a state variable. 
+// Initialize a state variable.
 // The content script sends info to this eventPage, which must forward it to a new popup page.
 // This variable is that info.
 var infoForPopup = {
-	ciphertext: "not set", 
+	ciphertext: "not set",
 	mode: "not set",
 	node: null,
 	sendResponse: null,
@@ -14,9 +14,9 @@ var keyring;
 var ownerName;
 
 var loadStuff = function(callback) {
-	console.group("Loading keyring")
+	console.group("Loading keyring");
 	chrome.storage.sync.get(["keyringData", "ownerName"], function(data) {
-		ownerName = data.ownerName;						
+		ownerName = data.ownerName;
 		var keyringData = data.keyringData;							console.log(keyringData);
 
 		keyring = new Keyring();
@@ -38,8 +38,8 @@ var loadStuff = function(callback) {
 			console.assert(ownerName, "Owner must be specified");
 		}
 		console.groupEnd("Loading keyring");
-	})
-}
+	});
+};
 
 var saveStuff = function(callback) {
 	console.group("Saving stuff");
@@ -51,35 +51,34 @@ var saveStuff = function(callback) {
 		if (callback) {
 			callback();
 		}
-	})
-
-}
+	});
+};
 
 
 var dispatcher = function(message, sender, sendResponse) {
 	switch(message.type) {
 	case (enums.messageType.SHOW_PAGEACTION):
 		//from contentScript to eventPage
-		showPageAction()
+		showPageAction();
 		break;
 	case (enums.messageType.DECRYPT_AND_SHOW):
 		//from contentScript to eventPage
-		showPlaintext(message, sender, sendResponse)
+		showPlaintext(message, sender, sendResponse);
 		break;
 	case (enums.messageType.GET_CIPHERTEXT):
 		//from view_sensitive_text popup to eventPage
-		sendResponse(infoForPopup)
-		console.log("Sent info to popup")
-		console.groupEnd("Launch sensitive-text viewer")
+		sendResponse(infoForPopup);
+		console.log("Sent info to popup");
+		console.groupEnd("Launch sensitive-text viewer");
 		break;
 	case (enums.messageType.ADD_CONTACT):
 		//from add_contact form to eventPage
-		addContact(message)
+		addContact(message);
 		break;
 	default:
 		alert("developer's mistake: event page doesn't know what to do with this type: " + message.type);
 	}
-}
+};
 
 var showPageAction = function() {
 	chrome.tabs.query(
@@ -89,30 +88,30 @@ var showPageAction = function() {
                 chrome.pageAction.show(tabArray[0].id);
         }
     );
-}
+};
 
 var showPlaintext = function(message, sender, sendResponse) {
-	console.group("Launch sensitive-text viewer")
+	console.group("Launch sensitive-text viewer");
 	var launchWindow = function() {
-		var w = 405 
-		var h = (message.editable) ? 300 : 250
+		var w = 405;
+		var h = (message.editable) ? 300 : 250;
 		var left = (window.screen.width)-((w)+10);
 		var top = 25+10; //(window.screen.height/2)-(h/2);
-		var url = chrome.extension.getURL('views/view_sensitive_text/view_sensitive_text.html')
+		var url = chrome.extension.getURL('views/view_sensitive_text/view_sensitive_text.html');
 		var options = {url: url, width: w, height: h, left: left, top: top, focused:true, type:"popup"};
 		chrome.windows.create(options);
-	}
+	};
 
 	infoForPopup.mode = (message.editable) ? "edit" : "show";
 	infoForPopup.ciphertext = message.ciphertext;
-	infoForPopup.node = message.node
-	infoForPopup.sendResponse = sendResponse
+	infoForPopup.node = message.node;
+	infoForPopup.sendResponse = sendResponse;
 	infoForPopup.keyringData = keyring.getData();
 	infoForPopup.ownerName = ownerName;
 	infoForPopup.tabId = sender.tab.id;
-	console.log(infoForPopup)
+	console.log(infoForPopup);
 	launchWindow();
-}
+};
 
 var addContact = function(message) {
 	var contact = message.contact;
@@ -127,18 +126,17 @@ var addContact = function(message) {
 			keyring.remove(signedName);
 		}
 		var success = keyring.add(signedName, contact);
-		console.log("Added contact in memory: " + success)
+		console.log("Added contact in memory: " + success);
 		saveStuff(function() {
-			console.log("Saved updated keyring")
-			console.groupEnd()
+			console.log("Saved updated keyring");
+			console.groupEnd();
 		});
 	}
 	catch (e) {
-		console.error(e.stack)
-		alert(e.stack)
+		console.error(e.stack);
+		alert(e.stack);
 	}
-
-}
+};
 
 var initializeSettingsForFirstLaunch = function(callback) {
 	console.log("Initializing first-launch settings");
@@ -150,11 +148,11 @@ var initializeSettingsForFirstLaunch = function(callback) {
 		'publicKey':null
 	};
 	if (TESTING) {
-		settings['ownerName'] = "Jon Smithers";
-		console.log("(testing mode on)")
+		settings.ownerName = "Jon Smithers";
+		console.log("(testing mode on)");
 	}
 	chrome.storage.sync.set(settings, callback);
-}
+};
 
 var setTestSettings = function(callback) {
 	var settings = {
@@ -165,11 +163,11 @@ var setTestSettings = function(callback) {
 		'facebook':false,
 		'privateKey':null,
 		'publicKey':null
-	}
+	};
 	chrome.storage.sync.set(settings, callback);
 	console.log("Initialized settings for TESTING");
 
-}
+};
 
 // chrome.storage.sync.set({keyringData: null});
 
@@ -184,9 +182,9 @@ else
 		loadStuff
 	);
 
-chrome.runtime.onMessage.addListener(dispatcher)
+chrome.runtime.onMessage.addListener(dispatcher).
 chrome.runtime.onInstalled.addListener(function() {
 	var createProperties = {url: chrome.extension.getURL('views/setup/setup.html')};
 	chrome.tabs.create(createProperties);
 	// (onInstalled includes updates)
-})
+});
