@@ -1,6 +1,9 @@
 var TESTING = false;
 
-// Initialize a state variable.
+/*******************************************
+ * State Variables
+ *******************************************/
+
 // The content script sends info to this eventPage, which must forward it to a new popup page.
 // This variable is that info.
 var infoForPopup = {
@@ -13,11 +16,15 @@ var infoForPopup = {
 var keyring;
 var ownerName;
 
+/*******************************************
+ * PrivateMethods
+ *******************************************/
+
 var loadStuff = function(callback) {
 	console.group("Loading keyring");
 	chrome.storage.local.get(["keyringData", "ownerName"], function(data) {
 		ownerName = data.ownerName;
-		var keyringData = data.keyringData;							console.log(keyringData);
+		var keyringData = data.keyringData;
 
 		keyring = new Keyring();
 
@@ -118,8 +125,6 @@ var addContact = function(message) {
 	var overwrite = message.overwrite;
 	var signedName = contact.signedName;
 
-	//todo: reject duplicate names and maybe duplicate keys.
-
 	try{
 		console.group("Adding contact to keyring");
 		if (overwrite && keyring.get(signedName)) {
@@ -169,11 +174,11 @@ var setTestSettings = function(callback) {
 
 };
 
-// chrome.storage.local.set({keyringData: null});
+// chrome.storage.local.set({keyringData: null, ownerName: null});
 
-/******************************************
-* Stop defining stuff and start doing stuff
-*******************************************/
+/*******************************************
+ * Stop defining and actually do stuff
+ *******************************************/
 
 if (!TESTING) 
 	loadStuff();
@@ -183,8 +188,14 @@ else
 	);
 
 chrome.runtime.onMessage.addListener(dispatcher);
-chrome.runtime.onInstalled.addListener(function() {
-	var createProperties = {url: chrome.extension.getURL('views/setup/setup.html')};
-	chrome.tabs.create(createProperties);
-	// (onInstalled includes updates)
+chrome.runtime.onInstalled.addListener(function() { // (onInstalled includes updates)
+
+	chrome.storage.local.get("ownerName", afterStorageFetch);
+	function afterStorageFetch(items) {
+		if (!items.ownerName) {
+			var createProperties = {url: chrome.extension.getURL('views/setup/setup.html')};
+			chrome.tabs.create(createProperties);
+		}
+	}
+	
 });

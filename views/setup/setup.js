@@ -5,6 +5,9 @@ fieldValues = {
   signedName: -1,
 };
 
+/**
+ * Save values to storage. This is called by the last "Next" button the user clicks.
+ */
 storeFieldValues = function() {
 	chrome.storage.local.set({
 		ownerName: fieldValues.signedName,
