@@ -22,7 +22,7 @@ if ($('body').data("pgp") || onFacebook()) {
 
   console.time("fetch pgp settings");
 
-  chrome.storage.sync.get(["displayMethod","editMethod", "facebook"], function(settings) {
+  chrome.storage.local.get(["displayMethod","editMethod", "facebook"], function(settings) {
     console.timeEnd("fetch pgp settings");
     displayMethod = enums.getDisplayMethod(settings.displayMethod);
     editMethod = enums.getEditMethod(settings.editMethod);

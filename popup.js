@@ -12,10 +12,10 @@ $(function() {
 		group = el.attr('name');
 		if (group == "display") {
 			method = el.attr('id').slice(2)
-			chrome.storage.sync.set({"displayMethod":method})
+			chrome.storage.local.set({"displayMethod":method})
 		} else if (group == "edit") {
 			method = el.attr('id').slice(2)
-			chrome.storage.sync.set({"editMethod":method})
+			chrome.storage.local.set({"editMethod":method})
 		} 
 	})
 
@@ -43,12 +43,12 @@ $(function() {
 	})
 	USEWITH_FACEBOOK.on('click', function() {
 		ischecked = $(this).is(':checked')
-		chrome.storage.sync.set({"facebook": ischecked}, function() {
+		chrome.storage.local.set({"facebook": ischecked}, function() {
 			console.log("facebook: " + ischecked)
 		})
 	})
 
-	chrome.storage.sync.get(["displayMethod", "editMethod", "facebook"], function(settings) {
+	chrome.storage.local.get(["displayMethod", "editMethod", "facebook"], function(settings) {
 		display = settings.displayMethod
 		edit = settings.editMethod
 		$("#d_" + display).parent().addClass("active");

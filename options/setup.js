@@ -4,7 +4,7 @@
 function save_fields() {
   //todo the private key, at least, should be encrypted
   PUBLIC_KEY.val();
-  chrome.storage.sync.set({
+  chrome.storage.local.set({
     privateKey: PRIVATE_KEY.val(),
     publicKey: PUBLIC_KEY.val()
   }, function() {
@@ -29,7 +29,7 @@ function auto_fill() {
  * Restores fields from chrome.storage
  */
 function restore_fields() {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     privateKey: '',
     publicKey: ''
   }, function(items) {

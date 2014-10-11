@@ -15,7 +15,7 @@ var ownerName;
 
 var loadStuff = function(callback) {
 	console.group("Loading keyring");
-	chrome.storage.sync.get(["keyringData", "ownerName"], function(data) {
+	chrome.storage.local.get(["keyringData", "ownerName"], function(data) {
 		ownerName = data.ownerName;
 		var keyringData = data.keyringData;							console.log(keyringData);
 
@@ -44,7 +44,7 @@ var loadStuff = function(callback) {
 var saveStuff = function(callback) {
 	console.group("Saving stuff");
 	console.log("keyring");
-	chrome.storage.sync.set({
+	chrome.storage.local.set({
 		keyringData: keyring.getData()
 	}, function() {
 		console.groupEnd("Saving stuff");
@@ -151,7 +151,7 @@ var initializeSettingsForFirstLaunch = function(callback) {
 		settings.ownerName = "Jon Smithers";
 		console.log("(testing mode on)");
 	}
-	chrome.storage.sync.set(settings, callback);
+	chrome.storage.local.set(settings, callback);
 };
 
 var setTestSettings = function(callback) {
@@ -164,12 +164,12 @@ var setTestSettings = function(callback) {
 		'privateKey':null,
 		'publicKey':null
 	};
-	chrome.storage.sync.set(settings, callback);
+	chrome.storage.local.set(settings, callback);
 	console.log("Initialized settings for TESTING");
 
 };
 
-// chrome.storage.sync.set({keyringData: null});
+// chrome.storage.local.set({keyringData: null});
 
 /******************************************
 * Stop defining stuff and start doing stuff

@@ -6,7 +6,7 @@ fieldValues = {
 };
 
 storeFieldValues = function() {
-	chrome.storage.sync.set({
+	chrome.storage.local.set({
 		ownerName: fieldValues.signedName,
 	});
 	var contact = {
