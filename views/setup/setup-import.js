@@ -11,9 +11,9 @@ function save_fields() {
     STATUS.text("Fields saved");
     setTimeout(function() {
       STATUS.text("");
-    }, 750)
-  })
-  return
+    }, 750);
+  });
+  return;
 }
 
 /**
@@ -58,7 +58,7 @@ $(function() {
     } else if (x == 1) {
       object.addClass("bg-success");
       object.removeClass("bg-danger");
-    } else if (x == 0) {
+    } else if (x === 0) {
       object.removeClass("bg-danger");
       object.removeClass("bg-success");
     }
@@ -82,14 +82,14 @@ $(function() {
 
     var color;
 
-    if (PRIVATE_KEY.val() != "") {
+    if (PRIVATE_KEY.val() !== "") {
       color = utils.validatePrivateKey(PRIVATE_KEY.val()) ? 1 : -1;
     } else {
       color = 0; 
     }
     colorField(PRIVATE_KEY, color);
 
-    if (PUBLIC_KEY.val() != "") {
+    if (PUBLIC_KEY.val() !== "") {
       color = utils.validatePublicKey(PUBLIC_KEY.val()) ? 1 : -1;
     } else {
       color = 0;
@@ -106,19 +106,19 @@ $(function() {
   restore_fields();
 
   // EVENTS
-  SHOWHOWTO_LNK.on('click', function() {HOWTO.slideToggle()})
+  SHOWHOWTO_LNK.on('click', function() {HOWTO.slideToggle();});
   $('textarea').on('keyup', validateAndColor);
   $('textarea').on('keyup', validateAndEnable);
   SUBMIT.on('click', function() {
     fieldValues.privateKey = PRIVATE_KEY.val();
     fieldValues.publicKey = PUBLIC_KEY.val();
-  })
+  });
 
   SUBMIT.on('click', function() {
     if (!SUBMIT.hasClass('disabled')) {
       save_fields();
     }
-  })
+  });
 
   //for testing:
   //auto_fill()

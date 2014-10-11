@@ -19,7 +19,7 @@ storeFieldValues = function() {
 		contact: contact,
 		overwrite: true
 	});
-}
+};
 
 
 
@@ -71,12 +71,12 @@ $(function() {
 		updateEnabledButtons();
 	}
 	function updateEnabledButtons() {
-		if (pageHistory.length != 0)
+		if (pageHistory.length !== 0)
 			BACK_BTN.removeClass("disabled");
 		else
 			BACK_BTN.addClass("disabled");
 
-		if (pageFuture.length != 0) 
+		if (pageFuture.length !== 0)
 			FORWARD_BTN.removeClass("disabled");
 		else
 			FORWARD_BTN.addClass("disabled");
@@ -91,28 +91,25 @@ $(function() {
 	FORWARD_BTN.addClass("disabled");
 
 	IMPORT_BTN.on('click', function() {
-		window.location.hash = "#importing_keys"
+		window.location.hash = "#importing_keys";
 		fromTo(PROMPT, IMPORTKEY_DIV);
 	});
 	GENERATE_BTN.on('click', function() {
-		window.location.hash = "#generating_keys"
+		window.location.hash = "#generating_keys";
 		fromTo(PROMPT, GENERATEKEY_DIV, generateKey);
-	})
+	});
 	GENERATE_NEXT_BTN.on('click', function() {
 		window.location.hash = "#name";
 		fromTo(GENERATEKEY_DIV, NAME_DIV);
-	})
+	});
 	NAME_NEXT_BTN.on('click', function() {
 		window.location.hash="#done";
 		fromTo(NAME_DIV, DONE_DIV);
-	})
+	});
 	IMPORT_NEXT_BTN.on('click', function() {
 		window.location.hash="#name";
 		fromTo(IMPORTKEY_DIV, NAME_DIV);
-	})
+	});
 	BACK_BTN.on('click', goBack);
 	FORWARD_BTN.on('click', goForward);
-
-
-
-})
+});
