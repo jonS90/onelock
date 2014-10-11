@@ -182,7 +182,7 @@ else
 		loadStuff
 	);
 
-chrome.runtime.onMessage.addListener(dispatcher).
+chrome.runtime.onMessage.addListener(dispatcher);
 chrome.runtime.onInstalled.addListener(function() {
 	var createProperties = {url: chrome.extension.getURL('views/setup/setup.html')};
 	chrome.tabs.create(createProperties);
