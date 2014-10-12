@@ -28,7 +28,7 @@
     "default_title": "PGP for Chrome"
   },
 
-  "options_page": "options/setup.html",
+  "options_page": "views/options/options.html",
   
   "permissions": [
     "storage",
