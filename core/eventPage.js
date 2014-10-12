@@ -136,11 +136,8 @@ var showPlaintext = function(message, sender, sendResponse) {
 };
 
 var getPublickey = function(message, sender, sendResponse) {
-	console.group("Request for MY public key");
-	console.log("from: " + sender);
-	console.log(keyring.get(ownerName));
-	sendResponse(keyring.get(ownerName).publicKey);
-	console.groupEnd("Request for MY public key");
+	console.log("Request for MY public key");
+	sendResponse(utils.exportKey(keyring.get(ownerName)));
 };
 
 var addContact = function(message) {
