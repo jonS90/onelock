@@ -1,4 +1,4 @@
-utils = {}
+utils = {};
 
 /**
  * Returns true if argument looks like a valid private key, otherwise false. 
@@ -9,23 +9,23 @@ utils.validatePublicKey = function(str) {
   begStr = "-----BEGIN PUBLIC KEY-----";
   endStr = "-----END PUBLIC KEY-----";
 
-  if (str.indexOf(begStr) == 0 &&
+  if (str.indexOf(begStr) === 0 &&
     str.indexOf(endStr) == (str.length-endStr.length))
-    return true
+    return true;
   else 
     return false;
-}
+};
 
 utils.validatePrivateKey = function(str) {
   begStr = "-----BEGIN RSA PRIVATE KEY-----";
   endStr = "-----END RSA PRIVATE KEY-----";
 
-  if (str.indexOf(begStr) == 0 &&
+  if (str.indexOf(begStr) === 0 &&
     str.indexOf(endStr) == (str.length-endStr.length))
-    return true
+    return true;
   else 
     return false;
-}
+};
 
 /**
  * Creates a sharable string to send to friends
@@ -37,8 +37,8 @@ utils.exportKey = function(keyEntry) {
 	output = {};
 	output.signedName = keyEntry.signedName;
 	output.publicKey = keyEntry.publicKey;
-	return JSON.stringify(output)
-}
+	return JSON.stringify(output);
+};
 
 /**
  * Extracts contact info from a string
@@ -50,5 +50,5 @@ utils.importKey = function(str) {
 	keyEntry = {};
 	keyEntry.signedName = imported.signedName;
 	keyEntry.publicKey = imported.publicKey;
-	return keyEntry
-}
+	return keyEntry;
+};

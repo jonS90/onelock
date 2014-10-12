@@ -21,36 +21,36 @@ $(function() {
 		} else {
 			SUBMIT_BUTTON.prop('disabled', true);
 		}
-	}
+	};
 
 	SUBMIT_BUTTON.on('click', function() {
-		console.group("Submit")
+		console.group("Submit");
 		if (!formIsValid) {
-			STATUS.text("Please check for invalid fields")
+			STATUS.text("Please check for invalid fields");
 		} else {
 			var newcontact = {
 				type: enums.messageType.ADD_CONTACT,
 				name: CONTACT_NAME.val(),
 				signedName: COTNACT_NAME.val(),
 				publicKey: CONTACT_KEY.val()
-			}
+			};
 			chrome.runtime.sendMessage(newcontact);
-			console.debug(newcontact)
+			console.debug(newcontact);
 			console.debug("sent message to add contact");
 		}
-		console.groupEnd()
-	})
-})
+		console.groupEnd();
+	});
+});
 
 /****************************
 * Helper methods
 *****************************/
 var formIsValid = function() {
-	namePresent = CONTACT_NAME.val() != "" && CONTACT_NAME.val() != DEFAULT_NAME_VALUE;
+	namePresent = CONTACT_NAME.val() !== "" && CONTACT_NAME.val() != DEFAULT_NAME_VALUE;
 	keyPresent = utils.validatePublicKey(CONTACT_KEY.val());
-	console.group("Form validation")
-	console.debug("name: " + namePresent)
-	console.debug("key: " + keyPresent)
-	console.groupEnd()
+	console.group("Form validation");
+	console.debug("name: " + namePresent);
+	console.debug("key: " + keyPresent);
+	console.groupEnd();
 	return namePresent && keyPresent;
-}
+};
