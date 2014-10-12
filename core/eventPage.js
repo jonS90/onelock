@@ -62,6 +62,18 @@ var saveStuff = function(callback) {
 };
 
 
+/**
+ * All messages sent to the extension are dispatched here.
+ * @param  {any}           message      The message sent by the calling script.
+ * @param  {MessageSender} sender       
+ * @param  {func}          sendResponse Function to call (at most once) when you
+ *     have a response. The argument should be any JSON-ifiable object. If you
+ *     have more than one onMessage listener in the same document, then only one
+ *     may send a response. This function becomes invalid when the event
+ *     listener returns, unless you return true from the event listener to
+ *     indicate you wish to send a response asynchronously (this will keep the
+ *     message channel open to the other end until sendResponse is called).
+ */
 var dispatcher = function(message, sender, sendResponse) {
 	switch(message.type) {
 	case (enums.messageType.SHOW_PAGEACTION):
@@ -77,6 +89,9 @@ var dispatcher = function(message, sender, sendResponse) {
 		sendResponse(infoForPopup);
 		console.log("Sent info to popup");
 		console.groupEnd("Launch sensitive-text viewer");
+		break;
+	case (enums.messageType.GET_PUBLICKEY):
+		getPublickey(message, sender, sendResponse);
 		break;
 	case (enums.messageType.ADD_CONTACT):
 		//from add_contact form to eventPage
@@ -118,6 +133,14 @@ var showPlaintext = function(message, sender, sendResponse) {
 	infoForPopup.tabId = sender.tab.id;
 	console.log(infoForPopup);
 	launchWindow();
+};
+
+var getPublickey = function(message, sender, sendResponse) {
+	console.group("Request for MY public key");
+	console.log("from: " + sender);
+	console.log(keyring.get(ownerName));
+	sendResponse(keyring.get(ownerName).publicKey);
+	console.groupEnd("Request for MY public key");
 };
 
 var addContact = function(message) {
@@ -173,8 +196,6 @@ var setTestSettings = function(callback) {
 	console.log("Initialized settings for TESTING");
 
 };
-
-// chrome.storage.local.set({keyringData: null, ownerName: null});
 
 /*******************************************
  * Stop defining and actually do stuff

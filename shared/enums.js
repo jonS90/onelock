@@ -19,41 +19,37 @@ var enums = {
 		ADD_CONTACT: 2,
 		//when contentscript says to show page action
 		SHOW_PAGEACTION: 3,
+		//when sharing owner's public key with friends
+		GET_PUBLICKEY: 4,
 
 	}
-}
+};
 
 
 
 enums.getEditName = function(myenum) {
 	switch (myenum) {
 		case (enums.edit.popup):
-			return "popup"
-			break;
+			return "popup";
 		case (enums.edit.iframe):
-			return "iframe"
-			break;
+			return "iframe";
 		case (enums.edit.inplace):
-			return "inplace"
-			break;
-		default: throw (myenum + " not found")
+			return "inplace";
+		default: throw (myenum + " not found");
 	}
-}
+};
 
 enums.getDisplayName = function(myenum) {
 	switch (myenum) {
 		case (enums.display.popup):
-			return "popup"
-			break;
+			return "popup";
 		case (enums.display.iframe):
-			return "iframe"
-			break;
+			return "iframe";
 		case (enums.display.inplace):
-			return "inplace"
-			break;
-		default: throw (myenum + " not found")
+			return "inplace";
+		default: throw (myenum + " not found");
 	}
-}
+};
 
 
 if (typeof nodeModifiers != 'undefined') {
@@ -61,24 +57,21 @@ if (typeof nodeModifiers != 'undefined') {
 		switch (myenum) {
 			case "popup": //(enums.edit.popup):
 				return nodeModifiers.clickNodeToDecryptText;
-				break;
 			case "iframe": //(enums.edit.iframe):
-				throw "not implemented"
+				throw "not implemented";
 			case "inplace": //(enums.edit.inplace):
-				throw "not implemented"
-			default: throw "not found"
+				throw "not implemented";
+			default: throw "not found";
 		}
-	}
+	};
 
 	enums.getDisplayMethod = function(myenum) {
 		switch(myenum) {
 			case "in-place": //(enums.display.inplace):
 				return nodeModifiers.decryptTextInPlace;
-				break;
 			case "popup": //(enums.display.popup):
 				return nodeModifiers.clickNodeToDecryptText;
-				break;
-			default: throw "method " + myenum + " not found"
+			default: throw "method " + myenum + " not found";
 		}
-	}
+	};
 }

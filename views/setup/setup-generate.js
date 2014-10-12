@@ -1,4 +1,3 @@
-
 function generateKey() {
   /* DUPLICATE CODE */
   var SHOW_KEYS_BTN = $('#show-keys-btn');
@@ -16,8 +15,7 @@ function generateKey() {
     GEN_STATUS.removeClass("text-info");
     GEN_STATUS.addClass("text-success");
     GEN_STATUS.text("We made you a new key!");
-
-  })
+  });
 }
 
 $(function() {
@@ -35,12 +33,11 @@ $(function() {
   SHOW_KEYS_DIV.hide();
 
   SHOW_KEYS_BTN.on('click', function() {
-    console.log("hi")
     SHOW_KEYS_DIV.slideToggle();
-  })
+  });
 
   NEXT_BTN.on('click', function() {
     fieldValues.privateKey = SHOW_PRIV.text();
-    fieldValues.publicKey = SHOW_PRIV.text();
-  })
-})
+    fieldValues.publicKey = SHOW_PUB.text();
+  });
+});

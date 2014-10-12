@@ -11,25 +11,28 @@ $(function() {
 		el = $(this).children();
 		group = el.attr('name');
 		if (group == "display") {
-			method = el.attr('id').slice(2)
-			chrome.storage.local.set({"displayMethod":method})
+			method = el.attr('id').slice(2);
+			chrome.storage.local.set({"displayMethod":method});
 		} else if (group == "edit") {
-			method = el.attr('id').slice(2)
-			chrome.storage.local.set({"editMethod":method})
+			method = el.attr('id').slice(2);
+			chrome.storage.local.set({"editMethod":method});
 		} 
-	})
+	});
 
 	KEYRING_COPY.on('click', function() {
-		copyToClipboard("WASSUP") //TODO insert actual key here
-		window.close()
-	})
+		chrome.runtime.sendMessage({type: enums.messageType.GET_PUBLICKEY}, afterResponse);
+		function afterResponse(publicKey) {
+			copyToClipboard(publicKey);
+			window.close();
+		}
+	});
 	KEYRING_ADD.on('click', function() {
 		//open view as popup
-		var w = 405
-		var h = 320 //655
+		var w = 405;
+		var h = 320; //655
 		var left = Math.round((window.screen.width - w) / 2);
 		var top = Math.round((window.screen.height - h) / 2);
-		var windowUrl = chrome.extension.getURL('views/add_contact/add_contact.html')
+		var windowUrl = chrome.extension.getURL('views/add_contact/add_contact.html');
 		var windowOptions = {
 			url: windowUrl, 
 			width: w, 
@@ -40,21 +43,21 @@ $(function() {
 			type:"popup"
 		};
 		chrome.windows.create(windowOptions);
-	})
+	});
 	USEWITH_FACEBOOK.on('click', function() {
-		ischecked = $(this).is(':checked')
+		ischecked = $(this).is(':checked');
 		chrome.storage.local.set({"facebook": ischecked}, function() {
-			console.log("facebook: " + ischecked)
-		})
-	})
+			console.log("facebook: " + ischecked);
+		});
+	});
 
 	chrome.storage.local.get(["displayMethod", "editMethod", "facebook"], function(settings) {
-		display = settings.displayMethod
-		edit = settings.editMethod
+		display = settings.displayMethod;
+		edit = settings.editMethod;
 		$("#d_" + display).parent().addClass("active");
 		$("#e_" + edit).parent().addClass("active");
-		$("#facebook").prop('checked', settings.facebook)
-	})
+		$("#facebook").prop('checked', settings.facebook);
+	});
 });
 
 
