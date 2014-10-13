@@ -31,7 +31,7 @@ utils.validatePrivateKey = function(str) {
  * Creates a sharable string to send to friends
  * @param  {KeyEntry} keyEntry  [description]
  * @return {String}             A sharable string others can use to import contact info
- * @throws {Error}    			If privateKey is not present in keyEntry
+ * @throws {Error}              If privateKey is not present in keyEntry
  */
 utils.exportKey = function(keyEntry) {
 	output = {};
@@ -46,7 +46,12 @@ utils.exportKey = function(keyEntry) {
  * @return {KeyEntry}     Valid contact info you can add to keyring
  */
 utils.importKey = function(str) {
-	imported = JSON.parse(str);
+  var imported;
+  try {
+    imported = JSON.parse(str);
+  } catch(e) {
+    throw new Error("Failed to parse JSON");
+  }
 	keyEntry = {};
 	keyEntry.signedName = imported.signedName;
 	keyEntry.publicKey = imported.publicKey;

@@ -74,31 +74,37 @@ var saveStuff = function(callback) {
  *     indicate you wish to send a response asynchronously (this will keep the
  *     message channel open to the other end until sendResponse is called).
  */
-var dispatcher = function(message, sender, sendResponse) {
-	switch(message.type) {
-	case (enums.messageType.SHOW_PAGEACTION):
-		//from contentScript to eventPage
-		showPageAction();
-		break;
-	case (enums.messageType.DECRYPT_AND_SHOW):
-		//from contentScript to eventPage
-		showPlaintext(message, sender, sendResponse);
-		break;
-	case (enums.messageType.GET_CIPHERTEXT):
-		//from view_sensitive_text popup to eventPage
-		sendResponse(infoForPopup);
-		console.log("Sent info to popup");
-		console.groupEnd("Launch sensitive-text viewer");
-		break;
-	case (enums.messageType.GET_PUBLICKEY):
-		getPublickey(message, sender, sendResponse);
-		break;
-	case (enums.messageType.ADD_CONTACT):
-		//from add_contact form to eventPage
-		addContact(message);
-		break;
-	default:
-		alert("developer's mistake: event page doesn't know what to do with this type: " + message.type);
+var dispatchToMethod = function(message, sender, sendResponse) {
+	try{
+		switch(message.type) {
+		case (enums.messageType.SHOW_PAGEACTION):
+			//from contentScript to eventPage
+			showPageAction();
+			break;
+		case (enums.messageType.DECRYPT_AND_SHOW):
+			//from contentScript to eventPage
+			showPlaintext(message, sender, sendResponse);
+			break;
+		case (enums.messageType.GET_CIPHERTEXT):
+			//from view_sensitive_text popup to eventPage
+			sendResponse(infoForPopup);
+			console.log("Sent info to popup");
+			console.groupEnd("Launch sensitive-text viewer");
+			break;
+		case (enums.messageType.GET_PUBLICKEY):
+			getPublickey(message, sender, sendResponse);
+			break;
+		case (enums.messageType.ADD_CONTACT):
+			//from add_contact form to eventPage
+			addContact(message, sender, sendResponse);
+			break;
+		default:
+			alert("developer's mistake: event page doesn't know what to do with this type: " + message.type);
+		}
+		return true; //don't cancel out any asynchronous sendResponses http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
+	} catch(e) {
+		console.error(e.stack);
+		alert(e.stack);
 	}
 };
 
@@ -140,27 +146,21 @@ var getPublickey = function(message, sender, sendResponse) {
 	sendResponse(utils.exportKey(keyring.get(ownerName)));
 };
 
-var addContact = function(message) {
-	var contact = message.contact;
+var addContact = function(message, sender, sendResponse) {
+	var contact = utils.importKey(message.contact);
 	var overwrite = message.overwrite;
 	var signedName = contact.signedName;
-
-	try{
-		console.group("Adding contact to keyring");
-		if (overwrite && keyring.get(signedName)) {
-			keyring.remove(signedName);
-		}
-		var success = keyring.add(signedName, contact);
-		console.log("Added contact in memory: " + success);
-		saveStuff(function() {
-			console.log("Saved updated keyring");
-			console.groupEnd();
-		});
+	console.group("Adding contact to keyring");
+	if (overwrite && keyring.get(signedName)) {
+		keyring.remove(signedName);
 	}
-	catch (e) {
-		console.error(e.stack);
-		alert(e.stack);
-	}
+	var success = keyring.add(signedName, contact);
+	console.log("Added contact in memory: " + success);
+	saveStuff(function() {
+		console.log("Saved updated keyring");
+		console.groupEnd("Adding contact to keyring");
+		sendResponse({success: success});
+	});
 };
 
 var initializeSettingsForFirstLaunch = function(callback) {
@@ -169,8 +169,6 @@ var initializeSettingsForFirstLaunch = function(callback) {
 		'displayMethod':'popup',
 		'editMethod':'popup',
 		'facebook':false,
-		'privateKey':null,
-		'publicKey':null
 	};
 	if (TESTING) {
 		settings.ownerName = "Jon Smithers";
@@ -205,7 +203,7 @@ else
 		loadStuff
 	);
 
-chrome.runtime.onMessage.addListener(dispatcher);
+chrome.runtime.onMessage.addListener(dispatchToMethod);
 chrome.runtime.onInstalled.addListener(function() { // (onInstalled includes updates)
 
 	chrome.storage.local.get("ownerName", afterStorageFetch);
