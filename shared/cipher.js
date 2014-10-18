@@ -32,12 +32,13 @@ function Cipher(keyring, name) {
 		try {
 			if (DOUBLE_ENCRYPTION)
 				str = CryptoJS.AES.decrypt(str, DUMBY_KEY).toString(CryptoJS.enc.Utf8);
-			json = JSON.parse(str);
-			encryptedData = json.ciphertext;
-			encryptedKey = json.encryptedKeys[name];
+			var json = JSON.parse(str);
+			var encryptedData = json.ciphertext;
+			var signedName = keyring.get(name).signedName;
+			var encryptedKey = json.encryptedKeys[signedName];
 
 			if (!encryptedKey)
-				throw new Error("This message isn't meant for " + name);
+				throw new Error("This message isn't meant for " + signedName);
 	
 			plainKey = getDecrypter().decrypt(encryptedKey);
 
@@ -93,11 +94,13 @@ function Cipher(keyring, name) {
 			if (!keyring.get(recipient))
 				throw new Error("Recipient not found: \"" + recipient + "\"");
 
-			pubEncrypter = new JSEncrypt();
-			pubEncrypter.setPublicKey(keyring.get(recipient).publicKey);
-			console.log("Using public Key: " + keyring.get(recipient).publicKey);
-			encryptedKeys[recipient] = pubEncrypter.encrypt(plainKey);
-			console.log("Encrypted key: " + encryptedKeys[recipient]);
+			var publicKey = keyring.get(recipient).publicKey;
+			var signedName = keyring.get(recipient).signedName;
+			var pubEncrypter = new JSEncrypt();
+			pubEncrypter.setPublicKey(publicKey);
+			console.log("Using public Key: " + publicKey);
+			encryptedKeys[signedName] = pubEncrypter.encrypt(plainKey);
+			console.log("Encrypted key: " + encryptedKeys[signedName]);
 		});
 	
 		json = {
