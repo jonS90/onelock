@@ -21,7 +21,8 @@ storeFieldValues = function() {
 	chrome.runtime.sendMessage({
 		type: enums.messageType.ADD_CONTACT,
 		contact: utils.exportKey(contact),
-		overwrite: true
+		overwrite: true,
+		newOwner: true
 	}, addContactResponse);
 	function addContactResponse(response) {
 		if (!response.success) {

@@ -149,10 +149,14 @@ var getPublickey = function(message, sender, sendResponse) {
 var addContact = function(message, sender, sendResponse) {
 	var contact = utils.importKey(message.contact);
 	var overwrite = message.overwrite;
+	var newOwner = message.newOwner;
 	var signedName = contact.signedName;
 	console.group("Adding contact to keyring");
 	if (overwrite && keyring.get(signedName)) {
 		keyring.remove(signedName);
+	}
+	if (newOwner) {
+		ownerName = signedName;
 	}
 	var success = keyring.add(signedName, contact);
 	console.log("Added contact in memory: " + success);

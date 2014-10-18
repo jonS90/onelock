@@ -55,7 +55,7 @@ function Keyring() {
 	};
 
 	/**
-	 * Adds an entry tot he keyring
+	 * Adds an entry to the keyring
 	 * @param {string} name  [description]
 	 * @param {object} value [description]
 	 */
@@ -76,9 +76,13 @@ function Keyring() {
 	/**
 	 * Gets the data for a name
 	 * @param  {string} name Name of contact
-	 * @return {object}      Undefined if not found.
+	 * @return {object}      Undefined if not found
+	 * @throws {Error}       If argument is undefined
 	 */
 	this.get = function(name) {
+		if (name === null) {
+			throw Error("Name is undefined");
+		}
 		return clone(keyCollection[name]);
 	};
 
