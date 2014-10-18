@@ -17,11 +17,17 @@ storeFieldValues = function() {
 		privateKey: fieldValues.privateKey,
 		publicKey: fieldValues.publicKey,
 	};
+
 	chrome.runtime.sendMessage({
 		type: enums.messageType.ADD_CONTACT,
-		contact: contact,
+		contact: utils.exportKey(contact),
 		overwrite: true
-	});
+	}, addContactResponse);
+	function addContactResponse(response) {
+		if (!response.success) {
+			alert("Just FYI, there seems to have been a problem");
+		}
+	}
 };
 
 
