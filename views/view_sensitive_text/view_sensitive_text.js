@@ -12,8 +12,8 @@ chrome.windows.getCurrent(function(w) {
 	popup.window = w.id;
 });	
 
-var SEARCH_FIELD = $('#contactsearch')
-var TEXTAREA = $('textarea')
+var SEARCH_FIELD = $('#contact-input')
+var TEXTAREA = $('#text-input');
 
 
 closeWindow = function() {
@@ -60,7 +60,8 @@ var setupPopup = function(infoForPopup) {
 			case "edit":
 				$('#heading').text('edit decrypted text')
 				$('#edit').show();
-				$('#edit').append("<textarea class='form-control' rows='4'>"+"</textarea>")
+				$('#edit').append("<textarea id='text-input' class='form-control' rows='4'>"+"</textarea>")
+				TEXTAREA = $(TEXTAREA.selector); //refresh jQuery snapshot (since we dynamically added something) 
 	
 				//make the bootstrap input-group popout like its supposed to
 				$('.panel-body').css("background-color", "222222");
