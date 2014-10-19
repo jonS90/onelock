@@ -37,6 +37,7 @@ utils.exportKey = function(keyEntry) {
 	output = {};
 	output.signedName = keyEntry.signedName;
 	output.publicKey = keyEntry.publicKey;
+  output.privateKey = keyEntry.privateKey;
 	return JSON.stringify(output);
 };
 
@@ -55,5 +56,6 @@ utils.importKey = function(str) {
 	keyEntry = {};
 	keyEntry.signedName = imported.signedName;
 	keyEntry.publicKey = imported.publicKey;
+  keyEntry.privateKey = imported.privateKey;
 	return keyEntry;
 };
