@@ -1,122 +1,117 @@
-var popup = {
+// TODO: autopopulate contact field
+
+var TESTING = false;
+var SEARCH_FIELD = $('#contact-input');
+var TEXTAREA = $('#text-input');
+
+var stateVars = { //just a bunch of global variables for the whole page
 	mode: {},
 	sendResponse: {},
 	node: {},
 	plaintext: {},
 	window: {},
 	tabId: 0 //the source tab, where our text came from
-}
+};
 
-var popupWindow; 
-chrome.windows.getCurrent(function(w) {
-	popup.window = w.id;
-});	
-
-var SEARCH_FIELD = $('#contact-input')
-var TEXTAREA = $('#text-input');
-
-
-closeWindow = function() {
-
-	if (popup.mode == "edit") {
-		var infoForPage = {
-			type: "return ciphertext",
-			nodeId: popup.node.id,
-			ciphertext: cipher.encrypt(TEXTAREA.val(), [SEARCH_FIELD.val()])
+// general setup 
+{
+	Mousetrap.bind('esc', function(e) {
+		closeWindow();
+	});
+	
+	//close window automatically after lost focus
+	var lastTimer = null;
+	$(window).blur(
+		function() {
+			closingWindow = true;
+			lastTimer = window.setTimeout(afterTimeout, 5000);
+			function afterTimeout() {
+				if (!TESTING) {
+					closeWindow();
+				}
+			}
 		}
-
-		chrome.tabs.sendMessage(popup.tabId, infoForPage);
-	}
-
-	chrome.windows.remove(popup.window);
+	);
+	
+	$(window).focus(function() {
+		console.debug("clearing timer");
+		window.clearTimeout(lastTimer);
+	});
+	$('#dismiss').on('click', closeWindow);
 }
 
-
-// setupPopup() will be used as a callback, but it needs access to these classes. Instantiate here.
-var keyring = new Keyring()
-var Cipher_ = Cipher; 
-
-var setupPopup = function(infoForPopup) {
+chrome.runtime.sendMessage({type: enums.messageType.GET_CIPHERTEXT}, setupPopup);
+function setupPopup(infoForPopup) {
 	try {
-		console.group("Received from background");
-		console.log(infoForPopup);
-		console.groupEnd()
-		popup.mode = infoForPopup.mode;
-		popup.sendResponse = infoForPopup.sendResponse
-		popup.tabId = infoForPopup.tabId;
-		popup.node = infoForPopup.node;
+		console.group("Received from event script"); console.log(infoForPopup); console.groupEnd("Received from event script");
+
+		stateVars.mode = infoForPopup.mode;
+		stateVars.sendResponse = infoForPopup.sendResponse;
+		stateVars.tabId = infoForPopup.tabId;
+		stateVars.node = infoForPopup.node;
 	
 		keyring = new Keyring();
-		keyring.loadData(infoForPopup.keyringData)
-		cipher = new Cipher(keyring, infoForPopup.ownerName)
-		popup.plaintext = cipher.decrypt(infoForPopup.ciphertext);
+		keyring.loadData(infoForPopup.keyringData);
+		cipher = new Cipher(keyring, infoForPopup.ownerName);
+		stateVars.plaintext = cipher.decrypt(infoForPopup.ciphertext);
 	
-		$('.toggleable').hide();
-		switch(popup.mode) {
+		switch(stateVars.mode) {
 			case "show":
-				$('#heading').text('decryption')
-				$('#show').html("<p>" + popup.plaintext.replace(/\n/g, "<br>") + "</p>").show();
+				$('#heading').text('decryption');
+				$('#show').html("<p>" + stateVars.plaintext.replace(/\n/g, "<br>") + "</p>").show();
+				$('#show').fadeIn();
+				$('#show').removeClass("hidden");
 				break;
 			case "edit":
-				$('#heading').text('edit decrypted text')
-				$('#edit').show();
-				$('#edit').append("<textarea id='text-input' class='form-control' rows='4'>"+"</textarea>")
+				$('#heading').text('edit decrypted text');
+				$('#edit').fadeIn();
+				$('#edit').removeClass("hidden");
+				$('#edit').append("<textarea id='text-input' class='form-control' rows='4'>"+"</textarea>");
 				TEXTAREA = $(TEXTAREA.selector); //refresh jQuery snapshot (since we dynamically added something) 
 	
 				//make the bootstrap input-group popout like its supposed to
 				$('.panel-body').css("background-color", "222222");
 	
-				SUGGESTION_BOX = $('ul')
+				SUGGESTION_BOX = $('ul');
 	
 				//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
-				TEXTAREA.focus().val(popup.plaintext)
+				TEXTAREA.focus().val(stateVars.plaintext);
 	
 				//escape key
-				TEXTAREA.on("keydown", function(e) {if (e.keyCode == 27) closeWindow() })
+				TEXTAREA.on("keydown", function(e) {if (e.keyCode == 27) closeWindow(); });
 	
 				//ctrl-enter
-				TEXTAREA.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey == true && e.shiftKey == false && e.altKey == false) closeWindow(); })
+				TEXTAREA.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey === true && e.shiftKey === false && e.altKey === false) closeWindow(); });
 	
-				SEARCH_FIELD.autocomplete({source: keyring.getNames()})
+				SEARCH_FIELD.autocomplete({source: keyring.getNames()});
 
 				break;
 			default:
-				$('#error').html("developer mistake...invalid mode specified").show();
+				alert("developer mistake...invalid mode specified");
 		}
 	}
 	catch (e) {
 		console.groupEnd();
-		console.error(e.stack)
-		alert(e.stack)
+		console.error(e.stack);
+		alert(e.stack);
 	}
 }
 
-//TODO: is there a possibility for a race condition?
-chrome.runtime.sendMessage({type: enums.messageType.GET_CIPHERTEXT}, setupPopup);
+chrome.windows.getCurrent(function(w) {
+	stateVars.window = w.id;
+});	
 
-Mousetrap.bind('esc', function(e) {
-	closeWindow()
-})
+function closeWindow() {
 
-// debugging
-Mousetrap.bind('alt+t', function(e) { 
-	console.log(testval)
-})
+	if (stateVars.mode == "edit") {
+		var infoForPage = {
+			type: "return ciphertext",
+			nodeId: stateVars.node.id,
+			ciphertext: cipher.encrypt(TEXTAREA.val(), [SEARCH_FIELD.val()])
+		};
 
-
-//close window automatically after lost focus
-var lastTimer = null;
-$(window).blur(
-	function() {
-		closingWindow = true;
-		lastTimer = window.setTimeout(function() {
-			// TODO uncomment!!!!
-			//closeWindow()
-		}, 5000)
+		chrome.tabs.sendMessage(stateVars.tabId, infoForPage);
 	}
-);
-$(window).focus(function() {
-	console.debug("clearing timer");
-	window.clearTimeout(lastTimer);
-})
-$('#dismiss').on('click', closeWindow)
+
+	chrome.windows.remove(stateVars.window);
+}
