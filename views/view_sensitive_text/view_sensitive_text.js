@@ -54,28 +54,38 @@ function setupPopup(infoForPopup) {
 		keyring.loadData(infoForPopup.keyringData);
 		cipher = new Cipher(keyring, infoForPopup.ownerName);
 		stateVars.plaintext = cipher.decrypt(infoForPopup.ciphertext);
-	
+
+		if (infoForPopup.ciphertext) {
+			try {
+				var encryptedKeys = JSON.parse(infoForPopup.ciphertext).encryptedKeys;
+				stateVars.recipients = Object.keys(encryptedKeys);
+			} catch (e) {
+
+			}
+		}
+
+		var showBody = function() {
+			$('.panel').hide();
+			$('.panel').removeClass('hidden');
+			$('.panel').fadeIn();
+		};
+
 		switch(stateVars.mode) {
 			case "show":
 				$('#heading').text('decryption');
 				$('#show').html("<p>" + stateVars.plaintext.replace(/\n/g, "<br>") + "</p>").show();
-				$('#show').fadeIn();
 				$('#show').removeClass("hidden");
+				showBody();
 				break;
 			case "edit":
 				$('#heading').text('edit decrypted text');
-				$('#edit').fadeIn();
 				$('#edit').removeClass("hidden");
-				$('#edit').append("<textarea id='text-input' class='form-control' rows='4'>"+"</textarea>");
+				$('#edit').append("<textarea id='text-input' placeholder='Message' class='form-control' rows='4'>"+"</textarea>");
 				TEXTAREA = $(TEXTAREA.selector); //refresh jQuery snapshot (since we dynamically added something) 
 	
-				//make the bootstrap input-group popout like its supposed to
-				$('.panel-body').css("background-color", "222222");
+				//make the addon component popout like its supposed to
+				$('.input-group-addon').css("background-color", "222222");
 	
-				SUGGESTION_BOX = $('ul');
-	
-				//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
-				TEXTAREA.focus().val(stateVars.plaintext);
 	
 				//escape key
 				TEXTAREA.on("keydown", function(e) {if (e.keyCode == 27) closeWindow(); });
@@ -83,7 +93,24 @@ function setupPopup(infoForPopup) {
 				//ctrl-enter
 				TEXTAREA.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey === true && e.shiftKey === false && e.altKey === false) closeWindow(); });
 	
-				SEARCH_FIELD.autocomplete({source: keyring.getNames()});
+				autocompleteOptions = {
+					source: keyring.getNames(),
+					minLength: 0,
+					autoFocus: true,
+				};
+				SEARCH_FIELD.autocomplete(autocompleteOptions);
+
+				SEARCH_FIELD.val(stateVars.recipients !== undefined ? stateVars.recipients[0] : "");
+
+				//we can't give focus to hidden elements, so unhide them now
+				showBody();
+
+				//hack to move caret to end (http://stackoverflow.com/questions/13425363/jquery-set-textarea-cursor-to-end-of-text)
+				TEXTAREA.focus().val(stateVars.plaintext);
+
+				if (SEARCH_FIELD.val() === "") {
+					SEARCH_FIELD.focus();
+				}
 
 				break;
 			default:
@@ -104,10 +131,11 @@ chrome.windows.getCurrent(function(w) {
 function closeWindow() {
 
 	if (stateVars.mode == "edit") {
+		var recipients = SEARCH_FIELD.val() === "" ? [] : [SEARCH_FIELD.val()];
 		var infoForPage = {
 			type: "return ciphertext",
 			nodeId: stateVars.node.id,
-			ciphertext: cipher.encrypt(TEXTAREA.val(), [SEARCH_FIELD.val()])
+			ciphertext: cipher.encrypt(TEXTAREA.val(), recipients)
 		};
 
 		chrome.tabs.sendMessage(stateVars.tabId, infoForPage);
