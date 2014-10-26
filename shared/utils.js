@@ -29,15 +29,17 @@ utils.validatePrivateKey = function(str) {
 
 /**
  * Creates a sharable string to send to friends
- * @param  {KeyEntry} keyEntry  [description]
- * @return {String}             A sharable string others can use to import contact info
- * @throws {Error}              If privateKey is not present in keyEntry
+ * @param  {KeyEntry} keyEntry     [description]
+ * @param  {boolean}  includePriv  [description]
+ * @return {String}                A sharable string others can use to import contact info
  */
-utils.exportKey = function(keyEntry) {
+utils.exportKey = function(keyEntry, includePriv) {
 	output = {};
 	output.signedName = keyEntry.signedName;
 	output.publicKey = keyEntry.publicKey;
-  output.privateKey = keyEntry.privateKey;
+  if (includePriv) {
+    output.privateKey = keyEntry.privateKey;
+  }
 	return JSON.stringify(output);
 };
 
