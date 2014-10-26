@@ -89,6 +89,7 @@ function setupPopup(infoForPopup) {
 	
 				//escape key
 				TEXTAREA.on("keydown", function(e) {if (e.keyCode == 27) closeWindow(); });
+				SEARCH_FIELD.on("keydown", function(e) {if (e.keyCode == 27) closeWindow();});
 	
 				//ctrl-enter
 				TEXTAREA.on("keypress", function(e) {if (e.charCode == 10 && e.ctrlKey === true && e.shiftKey === false && e.altKey === false) closeWindow(); });
