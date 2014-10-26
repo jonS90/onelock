@@ -10,7 +10,7 @@
 
 
 
-onFacebook = function() {return ($(location).attr('href').indexOf("://www.facebook.com") > -1);}
+onFacebook = function() {return ($(location).attr('href').indexOf("://www.facebook.com") > -1);};
 
 // don't do anything unless we see the flag: <body data-pgp="1">
 if ($('body').data("pgp") || onFacebook()) {
@@ -27,20 +27,20 @@ if ($('body').data("pgp") || onFacebook()) {
     displayMethod = enums.getDisplayMethod(settings.displayMethod);
     editMethod = enums.getEditMethod(settings.editMethod);
     
-    displayClass = "encryptedtext"
-    editClass = "encryptedinput" 
+    displayClass = "encryptedtext";
+    editClass = "encryptedinput" ;
 
     // FACEBOOK CONFIGURATION
     if ($(location).attr('href').indexOf("://www.facebook.com") > -1) {
       if (!settings.facebook) {
-        console.log("PGP disabled on Facebook")
-        console.log(settings)
-        console.log(settings.facebook)
-        return
+        console.log("PGP disabled on Facebook");
+        console.log(settings);
+        console.log(settings.facebook);
+        return;
       }
-      console.log("PGP active on Facebook")
-      displayClass = "null"
-      editClass = "uiTextareaAutogrow"
+      console.log("PGP active on Facebook");
+      displayClass = "null";
+      editClass = "uiTextareaAutogrow";
     }
 
     $(document).ready(function() {
@@ -49,13 +49,13 @@ if ($('body').data("pgp") || onFacebook()) {
       observer.observeChanges(displayClass, displayMethod, nodeModifiers.isNodeMarked);
       $('.'+displayClass).each(function() {
         displayMethod($(this));
-      })
+      });
 
       //encrypted input elements
       observer.observeChanges(editClass, editMethod, nodeModifiers.isNodeMarked);
       $('.'+editClass).each(function() {
         nodeModifiers.clickNodeToEditValue($(this));
-      })
+      });
     });
   });
 
@@ -73,5 +73,5 @@ if ($('body').data("pgp") || onFacebook()) {
           alert("Content script doesn't know what to do with this message");
           console.log(message);
       }
-    })
-} else console.log("no security features")
+    });
+} else console.log("no security features");
