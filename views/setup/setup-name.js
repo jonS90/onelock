@@ -19,4 +19,9 @@ $(function() {
 		fieldValues.signedName = INPUT.val();
 		storeFieldValues();
 	});
+
+	chrome.storage.local.get(autofillField);
+	function autofillField(storage) {
+		INPUT.val(storage.ownerName);
+	}
 });

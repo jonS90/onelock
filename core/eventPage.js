@@ -157,6 +157,7 @@ var addContact = function(message, sender, sendResponse) {
 	}
 	if (newOwner) {
 		ownerName = signedName;
+		console.log("Updated ownerName in memory to " + signedName);
 	}
 	var success = keyring.add(signedName, contact);
 	console.log("Added contact in memory: " + success);
