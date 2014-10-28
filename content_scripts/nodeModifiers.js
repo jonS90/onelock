@@ -78,7 +78,7 @@ var nodeModifiers = {};
 			// chrome.notifications.create({TemplateType: "basic", title: "Decryption", message: text})
 		})
 		
-		markNode(node);
+		//markNode(node);
 	}
 
 	nodeModifiers.decryptTextInPlace = function(node) {

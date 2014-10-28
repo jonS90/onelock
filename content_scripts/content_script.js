@@ -46,16 +46,31 @@ if ($('body').data("pgp") || onFacebook()) {
     $(document).ready(function() {
       
       //encrypted display elements
-      observer.observeChanges(displayClass, displayMethod, nodeModifiers.isNodeMarked);
-      $('.'+displayClass).each(function() {
-        displayMethod($(this));
+      $('body').on('click', "."+displayClass, function() {
+        console.log(this);
+        var node = $(this);
+        var text = node.text();
+        console.log("contentscript: request to show text: " + text);
+        chrome.runtime.sendMessage( {type: enums.messageType.DECRYPT_AND_SHOW, ciphertext: text, node: makePortable(node)} );
+      });
+
+      $('body').on('click', '.'+editClass, function() {
+        var node = $(this);
+        var text = node.val();
+        console.log("contentscript: request to edit text" + text);
+        chrome.runtime.sendMessage({
+           type: enums.messageType.DECRYPT_AND_SHOW, 
+           editable: true,
+           ciphertext: text, 
+           node: makePortable(node)
+         });
       });
 
       //encrypted input elements
-      observer.observeChanges(editClass, editMethod, nodeModifiers.isNodeMarked);
-      $('.'+editClass).each(function() {
-        nodeModifiers.clickNodeToEditValue($(this));
-      });
+      // observer.observeChanges(editClass, editMethod, nodeModifiers.isNodeMarked);
+      // $('.'+editClass).each(function() {
+      //   nodeModifiers.clickNodeToEditValue($(this));
+      // });
     });
   });
 
@@ -64,7 +79,6 @@ if ($('body').data("pgp") || onFacebook()) {
       switch(message.type) {
         case "return ciphertext": 
           $("#" + message.nodeId).val(message.ciphertext);
-          nodeModifiers.clickNodeToEditValue($("#" + message.nodeId)); //TODO don't make this assumption!!!
           break;
         case "log":
           console.log(message);
