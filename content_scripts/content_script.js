@@ -8,7 +8,31 @@
  * THIS javascript). 
  */
 
+function ifEnabledDo(callback) {
+  if ($('body').data('pgp')) {
+    callback();
+    return;
+  } else {
+    chrome.storage.local.get(["enabledUrls"], function(storage){
+      var enabledUrls = storage.enabledUrls;
+      enabledUrls = ["www.facebook.com"]; //DEBUGGING TODO
+      if (enabledUrls) {
+        var actualHref = $(location).attr('href');
+        for (i = 0; i < enabledUrls.length; i++) {
+          if (actualHref.indexOf(enabledUrls[i]) != -1) {
+            callback(); 
+            return;
+          }
+        }
+        console.log("OneLock: this url is not enabled");
+      }
+    });
+  }
+}
 
+ifEnabledDo(function() {
+  console.log("OneLock is enabled!!!");
+});
 
 onFacebook = function() {return ($(location).attr('href').indexOf("://www.facebook.com") > -1);};
 
