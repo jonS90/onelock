@@ -47,6 +47,7 @@ $(function() {
 	NAME_NEXT_BTN = $('#name-next');
 	NAME_DIV = $('#name-prompt');
 	DONE_DIV = $('#all-done');
+	DONE_BTN = $('#all-done-btn');
 
 
 	DURATION = 600;
@@ -119,6 +120,9 @@ $(function() {
 	IMPORT_NEXT_BTN.on('click', function() {
 		window.location.hash="#name";
 		fromTo(IMPORTKEY_DIV, NAME_DIV);
+	});
+	DONE_BTN.on('click', function() {
+		window.close();
 	});
 	BACK_BTN.on('click', goBack);
 	FORWARD_BTN.on('click', goForward);

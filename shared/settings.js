@@ -1,7 +1,15 @@
 var Settings = Settings || {};
 
+/**
+ * [Settings description]
+ * @param {object} settingsData An unaltered object obtained from
+ *     Settings.getData(). Pass nothing to initialize from scratch.
+ */
 function Settings(settingsData) {
-	if (!settingsData) {
+	if (typeof settingsData === "undefined") {
+		settingsData = getBaselineSettingsData();
+	}
+	else if (!settingsData) {
 		throw new Error("Data cannot be null");
 	}
 
@@ -83,6 +91,19 @@ function Settings(settingsData) {
 	*******************************************/
 	function clone(obj) {
 		return (obj === undefined) ? undefined : JSON.parse(JSON.stringify(obj));
+	}
+	function getBaselineSettingsData() {
+		var settingsData = {
+			webapps: {
+				facebook: {
+					urls: ["facebook.com"],
+					enableOneLock: true,
+					modifyClass: "_5yl5"
+					// <span data-reactid=".1b.$mid=11408487379630=24a11c31db95be96322.2:0.0.0.0.0.0.$end:0:$0:0">MESSAGE HERE</span>
+				}
+			}
+		};
+		return settingsData;
 	}
 
 

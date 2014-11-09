@@ -1,5 +1,3 @@
-// TODO: autopopulate contact field
-
 var TESTING = false;
 var SEARCH_FIELD = $('#contact-input');
 var TEXTAREA = $('#text-input');

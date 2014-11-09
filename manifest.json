@@ -1,5 +1,3 @@
-// todo : FEATURE - accept private/public keys for SELF and FRIENDS via copy and paste (show instructions for using openssl)
-// todo : FEATURE - choose recipients when inputting text
 {
   "manifest_version": 2,
 
@@ -17,7 +15,7 @@
   ],
 
   "background": {
-    "scripts": [ "shared/utils.js", "shared/keyring.js", "shared/enums.js", "core/eventPage.js"],
+    "scripts": [ "shared/utils.js", "shared/keyring.js", "shared/settings.js", "shared/enums.js", "core/eventPage.js"],
     // "page": "showPlaintext.html",
     "persistent": false
   },

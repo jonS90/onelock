@@ -15,46 +15,51 @@ var infoForPopup = {
 
 var keyring;
 var ownerName;
+var settings;
+var enabledUrls;
 
 /*******************************************
  * PrivateMethods
  *******************************************/
 
 var loadStuff = function(callback) {
-	console.group("Loading keyring");
-	chrome.storage.local.get(["keyringData", "ownerName"], function(data) {
-		ownerName = data.ownerName;
-		var keyringData = data.keyringData;
-
-		keyring = new Keyring();
+	keyring = new Keyring();
+	console.group("Loading from storage");
+	console.time("Load time");
+	chrome.storage.local.get(["keyringData", "ownerName", "settingsData"], function(storage) {
+		ownerName = storage.ownerName;
 
 		// first launch
-		if (!keyringData) {
+		if (!storage.keyringData) {
 			console.log("First launch detected");
+			settings = new Settings();
 			keyring.initialize();
 
-			initializeSettingsForFirstLaunch(callback);
+			initializeSettingsForFirstLaunch(callback); // TODO : this method should be deleted very shortly!
 
 		// normal launch
 		} else {
-			keyring.loadData(keyringData);
-			console.log("Loaded keyring data");
+			settings = new Settings(storage.settingsData);
+			keyring.loadData(storage.keyringData);
 			if (callback)
 				callback(keyringData);
 
 			console.assert(ownerName, "Owner must be specified");
 		}
-		console.groupEnd("Loading keyring");
+		enabledUrls = settings.getEnabledUrls();
+		console.timeEnd("Load time");
+		console.groupEnd("Loading from storage");
 	});
 };
 
 var saveStuff = function(callback) {
-	console.group("Saving stuff");
+	console.group("Saving to storage");
 	console.log("keyring");
 	chrome.storage.local.set({
-		keyringData: keyring.getData()
+		keyringData: keyring.getData(),
+		settingsData: settings.getData(),
 	}, function() {
-		console.groupEnd("Saving stuff");
+		console.groupEnd("Saving to storage");
 		if (callback) {
 			callback();
 		}
@@ -169,6 +174,7 @@ var addContact = function(message, sender, sendResponse) {
 };
 
 var initializeSettingsForFirstLaunch = function(callback) {
+	// TODO : this method should be deleted very shortly!
 	console.log("Initializing first-launch settings");
 	var settings = {
 		'displayMethod':'popup',
