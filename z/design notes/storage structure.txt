@@ -1,22 +1,7 @@
+How storage is gonna be
 {
-	displayMethod: enum,
-	editMethod: enum,
-	facebook: bool,
-	privateKey: string, //this should go inside keyring
-	publicKey: string, //this should go inside keyring
-	ownerName: string, // the name that the owner signs
-	keyringData: Keyring.getData()
-}
-
-
-
-An idea for settings:
-{
-	settings: {
-		facebook: {
-			url: string,
-			enableOneLock: enum,
-			highlighNodes: enum
-		}
-	}
+  ownerName: string,
+  keyringData: Keyring.getData()   <-- see keyring.js
+  enabledUrls: string[]            <-- redundant, fast-access data
+  settingsData: Settings.getData() <-- see settings.js
 }
