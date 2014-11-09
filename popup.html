@@ -6,7 +6,7 @@
     <script src="popup.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <link href="lib/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <title>Getting Started Extension's Popup</title>
+    <title>OneLock's Popup</title>
     <style>
       body {
         /*min-width: 357px;*/
@@ -26,6 +26,24 @@
   </head>
   <body>
     <div class="panel panel-primary">
+      <div class="panel-heading">Enable OneLock for X?</div>
+      <div class="panel-body" id="div-onelock-required">
+        This page has requested to use OneLock.
+      </div>
+      <div class="panel-body" id="div-toggle-onelock">
+        <center>
+          <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-primary">
+              <input type="radio" name="display" id="d_popup">Enable</input>
+            </label>
+            <label class="btn btn-primary">
+              <input type="radio" name="display" id="d_in-place">Disable</input>
+            </label>
+          </div>
+        <center>
+      </div>
+    </div>
+    <div class="panel panel-primary">
       <div class="panel-heading">Share your key</div>
       <div class="panel-body">
         <input type="button" value="Copy my key" class="btn btn-primary" id="keys_copy" style="width:100%"/>
@@ -34,8 +52,8 @@
     <div class="panel panel-default">
       <div class="panel-heading">Keyring</div>
       <div class="panel-body">
-        <input type="button" value="Add new" class="btn btn-primary" id="keys_add" style="width:49%"/>
-        <input type="button" value="Manage" class="btn btn-primary" id="keys_manage" style="width:49%"/>
+        <input type="button" value="Add new" class="btn btn-default" id="keys_add" style="width:49%"/>
+        <input type="button" value="Manage" class="btn btn-default" id="keys_manage" style="width:49%"/>
       </div>
     </div>
     <div class="panel panel-default">
