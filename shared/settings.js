@@ -28,7 +28,7 @@ function Settings(settingsData) {
   	*/
 
 	/*******************************************
-	* Public Methods (with priveleged access)
+	* Public Methods
 	*******************************************/
 
 	/**
@@ -43,15 +43,38 @@ function Settings(settingsData) {
 	 * @return {Array} An array of urls for which this extension is "enabled"
 	 */
 	this.getEnabledUrls = function() {
-		throw new Error("Not implemented");
+		var enabledUrls = [];
+
+		Object.keys(settings.webapps).forEach(function(key) {
+			webapp = new WebappSettings(settings.webapps[key]);
+			webapp.getUrls().forEach(function(url) {
+				enabledUrls.push(url);
+			});
+		});
+
+		return enabledUrls;
 	};
 
 	/**
-	 * @return {Object} An object containing settings for a specific url.
-	 * @throws {Error} If url is not found.
+	 * @param  {String} url 
+	 * @return {Object} An object containing settings for specified url
+	 * @throws {Error} If url is not found
 	 */
-	this.getSettingsForUrl = function() {
-
+	this.getSettingsForUrl = function(url) {
+		var returnVal;
+		Object.keys(settings.webapps).every(function(key) {
+			webapp = new WebappSettings(settings.webapps[key]);
+			if (webapp.getUrls().indexOf(url) != -1) {
+				returnVal = webapp;
+				return false; // break
+			}
+			return true; // keep iteating
+		});
+		if (returnVal) {
+			return returnVal;
+		} else {
+			throw new Error("This url not found: \"" + url + "\"");
+		}
 	};
 
 
@@ -61,4 +84,44 @@ function Settings(settingsData) {
 	function clone(obj) {
 		return (obj === undefined) ? undefined : JSON.parse(JSON.stringify(obj));
 	}
+
+
+	/*******************************************
+	* Internal class
+	*******************************************/
+	function WebappSettings(webappSettingsData) {
+		// private fields
+		this.urls = webappSettingsData.urls;
+		this.enableOneLock = webappSettingsData.enableOneLock;
+		this.modifyClass = webappSettingsData.modifyClass;
+	}
+	WebappSettings.prototype.getData = function() {
+		return clone({
+			"urls": this.urls,
+			"enableOneLock": this.enableOneLock,
+			"modifyClass": this.modifyClass,
+		});
+	};
+	WebappSettings.prototype.getClass = function() {
+		return clone(this.modifyClass);
+	};
+	WebappSettings.prototype.getUrls = function() {
+		return clone(this.urls);
+	};
 }
+
+
+Settings.getTestSettings = function() {
+	var settingsData = {
+		webapps: {
+			facebook: {
+				urls: ["facebook.com"],
+				enableOneLock: true,
+				modifyClass: "_5yl5"
+				// <span data-reactid=".1b.$mid=11408487379630=24a11c31db95be96322.2:0.0.0.0.0.0.$end:0:$0:0">MESSAGE HERE</span>
+			}
+		}
+	};
+	return new Settings(settingsData);
+};
+
