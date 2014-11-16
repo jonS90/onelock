@@ -1,4 +1,21 @@
-$(function() {
+var currentUrl; //set via asyncQueryCurrentUrl()
+var enabledUrls; //set via asyncFetchEnabledUrls()
+
+function asyncQueryCurrentUrl(callback) {
+	chrome.tabs.query( {'active': true, 'lastFocusedWindow': true}, function(tab) {
+		currentUrl = tab[0].url;
+		if (callback)
+			callback();
+	});
+}
+function asyncFetchEnabledUrls(callback) {
+	chrome.storage.local.get(["enabledUrls"], function(storage) {
+		enabledUrls = storage.enabledUrls;
+		if (callback) 
+			callback();
+	});
+}
+function prepareDocument(callback) {
 	// VARIABLES
 	KEYRING_ADD = $("#keys_add");
 	KEYRING_MANAGE = $("#keys_manage");
@@ -58,9 +75,39 @@ $(function() {
 		$("#e_" + edit).parent().addClass("active");
 		$("#facebook").prop('checked', settings.facebook);
 	});
-});
+	if (callback)
+		callback();
+}
 
+var incompleteAsyncCalls = 3; 
+{
+	asyncQueryCurrentUrl(finishedAsync);
+	asyncFetchEnabledUrls(finishedAsync);
+	$(prepareDocument(finishedAsync));
+}
 
+function finishedAsync() {
+	// error check
+	if (incompleteAsyncCalls < 0) { alert("I did some BAAAAD code");}
+
+	incompleteAsyncCalls--;
+	if (incompleteAsyncCalls == 0) {
+		// at this point, currentUrl and enabledUrls have been set
+
+		for (var i = 0; i < enabledUrls.length; i++) {
+			if (enabledUrls[i].indexOf(currentUrl) != -1) {
+				alert("THIS IS ENABLED");
+				return;
+				// will finish this later
+			}
+		}
+		alert("THIS IS NOT ENABLED");
+	}
+}
+
+//////////////////////
+// helper functions //
+//////////////////////
 function copyToClipboard(text){
     var copyDiv = document.createElement('div');
     copyDiv.contentEditable = true;

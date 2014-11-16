@@ -21,7 +21,7 @@
   },
   
   "page_action": {
-    "default_icon": "res/lock.png",
+    "default_icon": "res/lock.png", // source: http://blog.getjobber.com/2013/07/vaulting-and-epayment-updates/
     "default_popup": "popup.html",
     "default_title": "PGP for Chrome"
   },
@@ -30,6 +30,7 @@
   
   "permissions": [
     "storage",
-    "clipboardWrite"
+    "clipboardWrite",
+    "tabs"
   ]
 }
