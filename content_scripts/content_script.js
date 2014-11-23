@@ -8,6 +8,8 @@
  * THIS javascript). 
  */
 
+ifEnabledDo(startOneLock);
+
 function ifEnabledDo(callback) {
   if ($('body').data('pgp')) {
     callback();
@@ -15,7 +17,6 @@ function ifEnabledDo(callback) {
   } else {
     chrome.storage.local.get(["enabledUrls"], function(storage){
       var enabledUrls = storage.enabledUrls;
-      enabledUrls = ["www.facebook.com"]; //DEBUGGING TODO
       if (enabledUrls) {
         var actualHref = $(location).attr('href');
         for (i = 0; i < enabledUrls.length; i++) {
@@ -29,15 +30,7 @@ function ifEnabledDo(callback) {
     });
   }
 }
-
-ifEnabledDo(function() {
-  console.log("OneLock is enabled!!!");
-});
-
-onFacebook = function() {return ($(location).attr('href').indexOf("://www.facebook.com") > -1);};
-
-// don't do anything unless we see the flag: <body data-pgp="1">
-if ($('body').data("pgp") || onFacebook()) {
+function startOneLock() {
 
   chrome.runtime.sendMessage({
     type: enums.messageType.SHOW_PAGEACTION, 
@@ -112,4 +105,4 @@ if ($('body').data("pgp") || onFacebook()) {
           console.log(message);
       }
     });
-} else console.log("no security features");
+}
