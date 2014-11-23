@@ -7,7 +7,7 @@ $(function() {
   CLEAR.on('click', function() {
     if (confirm("Clear storage...do you REALLY want to do that?")) {
       console.error("CLEARING");
-      chrome.storage.local.set({keyringData: null, ownerName: null});
+      chrome.storage.local.set({keyringData: null, settingsData: null, ownerName: null});
     }
   });
   SETUP_BTN.on('click', function() {

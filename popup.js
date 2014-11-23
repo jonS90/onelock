@@ -1,5 +1,6 @@
 var currentUrl; //set via asyncQueryCurrentUrl()
 var enabledUrls; //set via asyncFetchEnabledUrls()
+var settings;
 
 function asyncQueryCurrentUrl(callback) {
 	chrome.tabs.query( {'active': true, 'lastFocusedWindow': true}, function(tab) {
@@ -9,10 +10,14 @@ function asyncQueryCurrentUrl(callback) {
 	});
 }
 function asyncFetchEnabledUrls(callback) {
-	chrome.storage.local.get(["enabledUrls"], function(storage) {
-		enabledUrls = storage.enabledUrls;
-		if (callback) 
-			callback();
+	chrome.storage.local.get(["enabledUrls", "settingsData"], function(storage) {
+		try {
+			console.log(storage.settingsData);
+			enabledUrls = storage.enabledUrls;
+			settings = new Settings(storage.settingsData);
+			if (callback) 
+				callback();
+		} catch(e) { console.error(e); }
 	});
 }
 function prepareDocument(callback) {
@@ -21,6 +26,8 @@ function prepareDocument(callback) {
 	KEYRING_MANAGE = $("#keys_manage");
 	KEYRING_COPY = $("#keys_copy");
 	USEWITH_FACEBOOK = $("#facebook");
+	WEBAPP_NAME = $("#span-webapp-name");
+	WEBAPP_TOGGLE = $();
 
 	// GROUPED-BUTTON CLICKS
 	// Here's why I detect clicks on the body: https://github.com/twbs/bootstrap/issues/2380
@@ -34,6 +41,14 @@ function prepareDocument(callback) {
 			method = el.attr('id').slice(2);
 			chrome.storage.local.set({"editMethod":method});
 		} 
+	});
+
+	WEBAPP_TOGGLE.on('click', function() {
+		// TODO THIS IS WHERE I NEED TO CONTINUE
+		isEnabled = $(this).is(':checked');
+		chrome.storage.local.set({"facebook": ischecked}, function() {
+			console.log("facebook: " + ischecked);
+		});
 	});
 
 	KEYRING_COPY.on('click', function() {
@@ -80,10 +95,14 @@ function prepareDocument(callback) {
 }
 
 var incompleteAsyncCalls = 3; 
-{
+try {
 	asyncQueryCurrentUrl(finishedAsync);
 	asyncFetchEnabledUrls(finishedAsync);
-	$(prepareDocument(finishedAsync));
+	$(function(){ 
+		prepareDocument(finishedAsync); 
+	});
+} catch (e) {
+	console.error(e);
 }
 
 function finishedAsync() {
@@ -92,16 +111,28 @@ function finishedAsync() {
 
 	incompleteAsyncCalls--;
 	if (incompleteAsyncCalls == 0) {
+		console.log("All async calls completed");
 		// at this point, currentUrl and enabledUrls have been set
+		if (!currentUrl || !enabledUrls) { throw new Error("URL var was not set!"); }
+		console.log(currentUrl);
+		console.log(enabledUrls);
 
+		var webappSettings;
 		for (var i = 0; i < enabledUrls.length; i++) {
-			if (enabledUrls[i].indexOf(currentUrl) != -1) {
-				alert("THIS IS ENABLED");
-				return;
-				// will finish this later
+			if (currentUrl.indexOf(enabledUrls[i]) != -1) {
+				webappSettings = settings.getSettingsForUrl(enabledUrls[i]);
+				break;
 			}
 		}
-		alert("THIS IS NOT ENABLED");
+		if (webappSettings && webappSettings.activatesOneLock()) {
+			console.log("activates");
+			console.log(WEBAPP_NAME);
+			WEBAPP_NAME.text(webappSettings.getDisplayName());
+		} else {
+			console.log("disabled for url");
+		}
+	} else {
+		console.log("Incomplete async calls: " + incompleteAsyncCalls);
 	}
 }
 

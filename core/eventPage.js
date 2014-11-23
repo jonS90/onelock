@@ -58,6 +58,7 @@ var saveStuff = function(callback) {
 	chrome.storage.local.set({
 		keyringData: keyring.getData(),
 		settingsData: settings.getData(),
+		enabledUrls: settings.getEnabledUrls(),
 	}, function() {
 		console.groupEnd("Saving to storage");
 		if (callback) {
