@@ -26,19 +26,26 @@
     </style>
   </head>
   <body>
-    <div class="panel panel-primary">
-      <div class="panel-heading">Enable OneLock for <span id="span-webapp-name">Y</span>?</div>
+    <div class="panel panel-default">
+      <div class="panel-heading">Toggle OneLock</div>
       <div class="panel-body" id="div-onelock-required">
         This page has requested to use OneLock.
       </div>
       <div class="panel-body" id="div-toggle-onelock">
-        <center>
-          <div class="btn-group" data-toggle="buttons">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="enable" id="ckbox-webapp-toggle"> 
+              Enable on <span class="span-webapp-name text-default" style="font-weight: bold; font-size: 120%"></span> 
+            </input>
+          </label>
+        </div>
+        <center class="hidden">
+          <div class="btn-group" data-toggle="buttons" id="div-webapp-toggle">
             <label class="btn btn-primary">
-              <input type="radio" name="display" id="d_popup">Enable</input>
+              <input type="radio" name="display" id="btn-webapp-toggle-enable">Enable</input>
             </label>
             <label class="btn btn-primary">
-              <input type="radio" name="display" id="d_in-place">Disable</input>
+              <input type="radio" name="display" id="btn-webapp-toggle-disable">Disable</input>
             </label>
           </div>
         <center>

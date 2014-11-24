@@ -26,8 +26,9 @@ function prepareDocument(callback) {
 	KEYRING_MANAGE = $("#keys_manage");
 	KEYRING_COPY = $("#keys_copy");
 	USEWITH_FACEBOOK = $("#facebook");
-	WEBAPP_NAME = $("#span-webapp-name");
-	WEBAPP_TOGGLE = $();
+	WEBAPP_NAME = $(".span-webapp-name");
+	WEBAPP_TOGGLE = $("#ckbox-webapp-toggle");
+	$("#div-onelock-required").hide();
 
 	// GROUPED-BUTTON CLICKS
 	// Here's why I detect clicks on the body: https://github.com/twbs/bootstrap/issues/2380
@@ -44,8 +45,10 @@ function prepareDocument(callback) {
 	});
 
 	WEBAPP_TOGGLE.on('click', function() {
-		// TODO THIS IS WHERE I NEED TO CONTINUE
 		isEnabled = $(this).is(':checked');
+		alert(isEnabled);
+
+		// TODO THIS IS WHERE I NEED TO CONTINUE
 		chrome.storage.local.set({"facebook": ischecked}, function() {
 			console.log("facebook: " + ischecked);
 		});
